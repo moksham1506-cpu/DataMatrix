@@ -125,11 +125,22 @@ def evaluate_benchmark(
 
     repair_accuracy = (correct_repairs / total_eval_repairs * 100) if total_eval_repairs > 0 else 100.0
 
+    # Evaluate unintended changes vs ground truth
+    injected_cells: Set[Tuple[str, int, str]] = set()
+    for inj in injections:
+        injected_cells.add((inj["table"], inj["row_id"], inj["column"]))
+
+    unintended_applied_changes = 0
+    for (t, r, c), val in applied_changes_map.items():
+        if (t, r, c) not in injected_cells and c != "ALL":
+            unintended_applied_changes += 1
+
     benchmark_summary = {
         "overall_detection_precision": round(overall_prec * 100, 1),
         "overall_detection_recall": round(overall_rec * 100, 1),
         "overall_detection_f1": round(overall_f1 * 100, 1),
         "repair_accuracy": round(repair_accuracy, 1),
+        "unintended_changes": unintended_applied_changes,
         "total_injections_evaluated": len(injections),
         "metrics_by_issue_type": metrics_by_type
     }
@@ -143,17 +154,51 @@ def evaluate_benchmark(
     return benchmark_summary
 
 
+def format_scoreboard_markdown(summary: Dict[str, Any]) -> str:
+    """Format benchmark metrics into a compact, beautiful Markdown scoreboard."""
+    lines = [
+        "| Issue Category | Ground Truth | Detected | Precision | Recall | F1-Score |",
+        "|:---|:---:|:---:|:---:|:---:|:---:|"
+    ]
+    for itype, m in summary["metrics_by_issue_type"].items():
+        name = itype.replace("_", " ").title()
+        lines.append(
+            f"| {name} | {m['ground_truth_count']} | {m['detected_count']} | "
+            f"{m['precision']}% | {m['recall']}% | {m['f1_score']}% |"
+        )
+    lines.append("|:---|:---:|:---:|:---:|:---:|:---:|")
+    lines.append(
+        f"| **OVERALL COMPOSITE** | **{summary['total_injections_evaluated']}** | - | "
+        f"**{summary['overall_detection_precision']}%** | **{summary['overall_detection_recall']}%** | "
+        f"**{summary['overall_detection_f1']}%** |"
+    )
+    lines.append("")
+    lines.append(f"**Repair Accuracy**: `{summary['repair_accuracy']}%` &bull; **Unintended Changes**: `{summary.get('unintended_changes', 0)}`")
+    return "\n".join(lines)
+
+
+def get_benchmark_scoreboard(
+    ground_truth_path: str = "data/ground_truth.json",
+    customers_csv: str = "data/customers.csv",
+    orders_csv: str = "data/orders.csv"
+) -> Dict[str, Any]:
+    """Public API for Streamlit UI and external callers to fetch the benchmark scoreboard."""
+    summary = evaluate_benchmark(
+        ground_truth_path=ground_truth_path,
+        customers_csv=customers_csv,
+        orders_csv=orders_csv
+    )
+    md_table = format_scoreboard_markdown(summary)
+    return {
+        "summary": summary,
+        "markdown_table": md_table
+    }
+
+
 def print_benchmark_table(results: Dict[str, Any]):
     """Print a clean Markdown table of the benchmark results."""
     print("\n# DataFix Autonomous Quality & Repair Benchmark Results\n")
-    print("| Issue Category | Ground Truth | Detected | Precision | Recall | F1-Score |")
-    print("|:---|:---:|:---:|:---:|:---:|:---:|")
-    for itype, m in results["metrics_by_issue_type"].items():
-        name = itype.replace("_", " ").title()
-        print(f"| {name} | {m['ground_truth_count']} | {m['detected_count']} | {m['precision']}% | {m['recall']}% | {m['f1_score']}% |")
-    print("|:---|:---:|:---:|:---:|:---:|:---:|")
-    print(f"| **OVERALL COMPOSITE** | **{results['total_injections_evaluated']}** | - | **{results['overall_detection_precision']}%** | **{results['overall_detection_recall']}%** | **{results['overall_detection_f1']}%** |")
-    print(f"\n**Repair Accuracy against Ground Truth**: {results['repair_accuracy']}%\n")
+    print(format_scoreboard_markdown(results))
 
 
 if __name__ == "__main__":
