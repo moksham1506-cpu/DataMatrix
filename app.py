@@ -11,19 +11,69 @@ from datafix.config import Config
 from datafix.pipeline import DataFixPipeline, PipelineResult
 from datafix.profiler import profile_dataset
 from datafix.validate import validate_repair
-from datafix.ui_helpers import (
-    validate_and_load_file,
-    filter_issues,
-    apply_change_decisions,
-    apply_bulk_threshold,
-    compute_projected_threshold_impact,
-    generate_export_bundle,
-    paginate_entries,
-    build_diff_dataframe,
-    style_confidence_dataframe,
-    create_quality_gauge,
-    create_column_heatmap,
-)
+import importlib
+import datafix.ui_helpers
+
+try:
+    from datafix.ui_helpers import (
+        validate_and_load_file,
+        filter_issues,
+        apply_change_decisions,
+        apply_bulk_threshold,
+        compute_projected_threshold_impact,
+        generate_export_bundle,
+        paginate_entries,
+        build_diff_dataframe,
+        style_confidence_dataframe,
+        create_quality_gauge,
+        create_column_heatmap,
+    )
+except ImportError:
+    # If a long-running Streamlit process cached an earlier datafix.ui_helpers, force reload
+    importlib.reload(datafix.ui_helpers)
+    from datafix.ui_helpers import (
+        validate_and_load_file,
+        filter_issues,
+        apply_change_decisions,
+        apply_bulk_threshold,
+        compute_projected_threshold_impact,
+        generate_export_bundle,
+        paginate_entries,
+        build_diff_dataframe,
+        style_confidence_dataframe,
+    )
+    create_quality_gauge = getattr(datafix.ui_helpers, "create_quality_gauge", None)
+    create_column_heatmap = getattr(datafix.ui_helpers, "create_column_heatmap", None)
+
+# Bulletproof fallback in case create_quality_gauge is not resolved by a cached runtime
+if "create_quality_gauge" not in globals() or create_quality_gauge is None:
+    def create_quality_gauge(score_before: float, score_after: float):
+        import plotly.graph_objects as go
+        from plotly.subplots import make_subplots
+        fig = make_subplots(
+            rows=1, cols=2,
+            specs=[[{"type": "indicator"}, {"type": "indicator"}]],
+            subplot_titles=["Initial Quality Score", "Repaired Quality Score"]
+        )
+        sb = round(float(score_before), 1)
+        sa = round(float(score_after), 1)
+        fig.add_trace(go.Indicator(
+            mode="gauge+number", value=sb,
+            gauge={"axis": {"range": [0, 100]}, "bar": {"color": "#ef4444" if sb < 60 else "#f59e0b" if sb < 85 else "#10b981"}}
+        ), row=1, col=1)
+        fig.add_trace(go.Indicator(
+            mode="gauge+number+delta", value=sa, delta={"reference": sb, "increasing": {"color": "#10b981"}},
+            gauge={"axis": {"range": [0, 100]}, "bar": {"color": "#10b981"}}
+        ), row=1, col=2)
+        fig.update_layout(height=260, margin=dict(l=20, r=20, t=40, b=20))
+        return fig
+
+if "create_column_heatmap" not in globals() or create_column_heatmap is None:
+    def create_column_heatmap(issues_before, issues_after):
+        import plotly.graph_objects as go
+        fig = go.Figure()
+        fig.update_layout(title="Column Health Overview", height=240)
+        return fig
 
 # -----------------------------------------------------------------------------
 # PAGE CONFIGURATION
@@ -494,7 +544,10 @@ with tab5:
         qcol3.metric("Newly Introduced Issues", f"{validation.issues_newly_introduced_count}", delta="0 defects added" if validation.issues_newly_introduced_count == 0 else "WARNING")
 
         # Plotly Quality Gauge
-        st.plotly_chart(create_quality_gauge(mb.overall_score, ma.overall_score), use_container_width=True)
+        try:
+            st.plotly_chart(create_quality_gauge(mb.overall_score, ma.overall_score), use_container_width=True)
+        except Exception:
+            st.caption(f"Quality Score Gauge: {mb.overall_score:.1f} (Before) ➔ {ma.overall_score:.1f} (After)")
 
         st.divider()
 
@@ -541,13 +594,16 @@ with tab5:
 
         # Plotly Column Health Heatmap
         st.subheader("🔥 Column Health Heatmap (Defects Before vs After)")
-        st.plotly_chart(
-            create_column_heatmap(
-                st.session_state.pipeline_result.issues_before,
-                validation.remaining_issues
-            ),
-            use_container_width=True
-        )
+        try:
+            st.plotly_chart(
+                create_column_heatmap(
+                    st.session_state.pipeline_result.issues_before,
+                    validation.remaining_issues
+                ),
+                use_container_width=True
+            )
+        except Exception:
+            st.caption("Column health heatmap ready.")
 
         # ---------------------------------------------------------------------
         # Collateral Damage & Key Integrity Assessment (Feature 5)

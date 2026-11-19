@@ -276,3 +276,25 @@ def test_compute_projected_threshold_impact():
     assert impact_65["projected_score"] >= impact_85["projected_score"]
 
 
+def test_create_quality_gauge():
+    """Test generating Plotly quality gauge indicator figure."""
+    from datafix.ui_helpers import create_quality_gauge
+    fig = create_quality_gauge(75.5, 95.0)
+    assert fig is not None
+    assert len(fig.data) == 2
+    assert fig.data[0].value == 75.5
+    assert fig.data[1].value == 95.0
+
+
+def test_create_column_heatmap():
+    """Test generating Plotly column health heatmap."""
+    from datafix.ui_helpers import create_column_heatmap
+    issue1 = Issue("I1", "outlier", ["age"], [1], [999], "high", "outlier", "outlier")
+    issue2 = Issue("I2", "missing_value", ["email"], [2], [None], "med", "missing", "missing")
+    
+    fig = create_column_heatmap([issue1, issue2], [issue2])
+    assert fig is not None
+    assert len(fig.data) >= 1
+
+
+

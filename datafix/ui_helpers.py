@@ -13,6 +13,20 @@ from datafix.audit import AuditLog
 from datafix.validate import validate_repair, ValidationResult, compute_quality_metrics
 from datafix.report import generate_html_report
 
+__all__ = [
+    "validate_and_load_file",
+    "filter_issues",
+    "apply_change_decisions",
+    "apply_bulk_threshold",
+    "compute_projected_threshold_impact",
+    "paginate_entries",
+    "build_diff_dataframe",
+    "style_confidence_dataframe",
+    "generate_export_bundle",
+    "create_quality_gauge",
+    "create_column_heatmap",
+]
+
 
 def validate_and_load_file(uploaded_file: Any) -> Tuple[Optional[pd.DataFrame], Optional[str]]:
     """Validate and read an uploaded file or path into a pandas DataFrame.
