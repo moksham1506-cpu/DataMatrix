@@ -100,25 +100,6 @@ class PipelineResult:
             "quality_report_html": str(report_html_path),
             "metadata_json": str(meta_json_path) if self.metadata else "",
         }
-        with open(audit_json_path, "w", encoding="utf-8") as f:
-            f.write(self.audit_log.to_json())
-
-        # 3. HTML Quality Report
-        report_html_path = out_path / f"quality_report_{name}.html"
-        generate_html_report(
-            validation_result=self.validation,
-            diagnoses=self.diagnoses,
-            audit_log=self.audit_log,
-            dataset_name=self.dataset_name,
-            output_path=str(report_html_path)
-        )
-
-        return {
-            "cleaned_csv": str(cleaned_csv_path),
-            "change_log_csv": str(audit_csv_path),
-            "change_log_json": str(audit_json_path),
-            "quality_report_html": str(report_html_path),
-        }
 
 
 class DataFixPipeline:
