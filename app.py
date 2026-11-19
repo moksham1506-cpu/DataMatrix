@@ -168,10 +168,67 @@ with tab1:
     else:
         st.info("👆 Upload a dataset or click **'Load Demo Dataset'** to inspect profiles and run DataFix.")
 
-# Placeholders for remaining tabs
+# =============================================================================
+# TAB 2: DETECTED ISSUES
+# =============================================================================
 with tab2:
-    st.header("Detected Issues")
-    st.info("Please load a dataset in Tab 1 to view detected issues.")
+    st.header("Detected Data Quality Issues")
+    if st.session_state.pipeline_result is None:
+        st.info("Please load a dataset in Tab 1 to view detected issues.")
+    else:
+        issues = st.session_state.pipeline_result.issues_before
+        unique_types = sorted(list({i.issue_type for i in issues}))
+
+        # Filters
+        fcol1, fcol2, fcol3 = st.columns([2, 2, 2])
+        with fcol1:
+            type_filter = st.selectbox("Filter by Issue Type", options=["All"] + unique_types)
+        with fcol2:
+            sev_filter = st.selectbox("Filter by Severity", options=["All", "high", "med", "low"])
+        with fcol3:
+            st.write("")
+            st.write("")
+            st.caption(f"Showing issues matching selected filters")
+
+        filtered_issues = filter_issues(issues, issue_type=type_filter, severity=sev_filter)
+
+        # Issue Breakdown KPIs
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Total Issues Detected", len(issues))
+        m2.metric("High Severity", sum(1 for i in issues if i.severity == "high"))
+        m3.metric("Medium Severity", sum(1 for i in issues if i.severity == "med"))
+        m4.metric("Low Severity", sum(1 for i in issues if i.severity == "low"))
+
+        st.subheader(f"Issues List ({len(filtered_issues)} displayed)")
+        if filtered_issues:
+            issue_rows = []
+            for i in filtered_issues:
+                issue_rows.append({
+                    "Issue ID": i.issue_id,
+                    "Type": i.issue_type,
+                    "Severity": i.severity.upper(),
+                    "Columns": ", ".join(i.columns),
+                    "Affected Rows": len(i.row_ids),
+                    "Detector": i.detector,
+                    "Description": i.description,
+                    "Sample Values": ", ".join(str(v) for v in i.sample_values[:3])
+                })
+            st.dataframe(pd.DataFrame(issue_rows), use_container_width=True)
+
+            with st.expander("🔍 Inspect Issue Details & Evidence", expanded=False):
+                selected_issue_id = st.selectbox(
+                    "Select an Issue ID to inspect full evidence",
+                    options=[i.issue_id for i in filtered_issues]
+                )
+                selected_issue = next((i for i in filtered_issues if i.issue_id == selected_issue_id), None)
+                if selected_issue:
+                    st.write(f"**Description:** {selected_issue.description}")
+                    st.write(f"**Columns:** {', '.join(selected_issue.columns)}")
+                    st.write(f"**Detector:** `{selected_issue.detector}` | **Severity:** `{selected_issue.severity}`")
+                    st.write(f"**Affected Row IDs ({len(selected_issue.row_ids)} total):** {selected_issue.row_ids[:20]}{' ...' if len(selected_issue.row_ids) > 20 else ''}")
+                    st.json(selected_issue.evidence)
+        else:
+            st.info("No issues match the selected filter criteria.")
 
 with tab3:
     st.header("Root-Cause Diagnosis")
