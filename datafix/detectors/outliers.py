@@ -18,6 +18,12 @@ DOMAIN_CONSTRAINTS = {
     "price": {"min": 0.0, "max": None},
     "total_amount": {"min": 0.0, "max": None},
     "amount": {"min": 0.0, "max": None},
+    "gpa": {"min": 0.0, "max": 10.0},
+    "cgpa": {"min": 0.0, "max": 10.0},
+    "sgpa": {"min": 0.0, "max": 10.0},
+    "attendance": {"min": 0.0, "max": 100.0},
+    "attendance_percent": {"min": 0.0, "max": 100.0},
+    "attendance_percentage": {"min": 0.0, "max": 100.0},
 }
 
 
@@ -28,7 +34,7 @@ def detect_outliers(df: pd.DataFrame, config: Optional[Config] = None) -> List[I
     issues: List[Issue] = []
 
     total_rows = len(df_with_id)
-    if total_rows < 10:
+    if total_rows == 0:
         return issues
 
     content_cols = [c for c in df_with_id.columns if c != "_row_id"]
@@ -58,18 +64,10 @@ def detect_outliers(df: pd.DataFrame, config: Optional[Config] = None) -> List[I
     # =========================================================================
     for col in numeric_cols:
         s = clean_numeric_df[col].dropna()
-        if len(s) < 10:
+        if len(s) == 0:
             continue
 
         col_lower = col.lower()
-        q25 = float(s.quantile(0.25))
-        q75 = float(s.quantile(0.75))
-        iqr = q75 - q25
-        mean = float(s.mean())
-        std = float(s.std()) if len(s) > 1 else 0.0
-
-        lower_bound = q25 - (cfg.outlier_iqr_multiplier * iqr)
-        upper_bound = q75 + (cfg.outlier_iqr_multiplier * iqr)
 
         # Domain boundary check
         domain_min = None
@@ -80,22 +78,39 @@ def detect_outliers(df: pd.DataFrame, config: Optional[Config] = None) -> List[I
                 domain_max = bounds["max"]
                 break
 
-        # Masks
-        iqr_outliers = (clean_numeric_df[col] < lower_bound) | (clean_numeric_df[col] > upper_bound)
-        
-        z_outliers = pd.Series(False, index=clean_numeric_df.index)
-        if std > 0:
-            z_scores = (clean_numeric_df[col] - mean).abs() / std
-            z_outliers = z_scores > cfg.outlier_zscore_threshold
-
         domain_outliers = pd.Series(False, index=clean_numeric_df.index)
         if domain_min is not None:
             domain_outliers = domain_outliers | (clean_numeric_df[col] < domain_min)
         if domain_max is not None:
             domain_outliers = domain_outliers | (clean_numeric_df[col] > domain_max)
 
+        # Statistical IQR & Z-score checks (requires at least 10 non-null values)
+        if len(s) >= 10:
+            q25 = float(s.quantile(0.25))
+            q75 = float(s.quantile(0.75))
+            iqr = q75 - q25
+            mean = float(s.mean())
+            std = float(s.std()) if len(s) > 1 else 0.0
+
+            lower_bound = q25 - (cfg.outlier_iqr_multiplier * iqr)
+            upper_bound = q75 + (cfg.outlier_iqr_multiplier * iqr)
+
+            iqr_outliers = (clean_numeric_df[col] < lower_bound) | (clean_numeric_df[col] > upper_bound)
+            z_scores = (clean_numeric_df[col] - mean).abs() / std if std > 0 else pd.Series(0.0, index=clean_numeric_df.index)
+            z_outliers = z_scores > cfg.outlier_zscore_threshold
+            stat_outliers = iqr_outliers & z_outliers
+        else:
+            q25 = float(s.quantile(0.25)) if len(s) > 0 else 0.0
+            q75 = float(s.quantile(0.75)) if len(s) > 0 else 0.0
+            iqr = q75 - q25
+            mean = float(s.mean()) if len(s) > 0 else 0.0
+            std = float(s.std()) if len(s) > 1 else 0.0
+            lower_bound = domain_min if domain_min is not None else float(s.min())
+            upper_bound = domain_max if domain_max is not None else float(s.max())
+            stat_outliers = pd.Series(False, index=clean_numeric_df.index)
+
         # Combined univariate outliers (must violate domain boundary OR (IQR and Z-score))
-        combined_outlier_mask = domain_outliers | (iqr_outliers & z_outliers)
+        combined_outlier_mask = domain_outliers | stat_outliers
         outlier_count = int(combined_outlier_mask.sum())
 
         if outlier_count > 0:
@@ -105,6 +120,15 @@ def detect_outliers(df: pd.DataFrame, config: Optional[Config] = None) -> List[I
             has_domain_violation = bool(domain_outliers.any())
             severity = "high" if has_domain_violation or outlier_count > 20 else "med"
 
+            if domain_min is not None and domain_max is not None:
+                desc = f"Column '{col}' has {outlier_count} values outside valid range [{domain_min}, {domain_max}]."
+            elif domain_min is not None:
+                desc = f"Column '{col}' has {outlier_count} values below minimum valid threshold {domain_min}."
+            elif domain_max is not None:
+                desc = f"Column '{col}' has {outlier_count} values above maximum valid threshold {domain_max}."
+            else:
+                desc = f"Column '{col}' has {outlier_count} statistical/domain outliers outside [{lower_bound:.2f}, {upper_bound:.2f}]."
+
             issues.append(Issue(
                 issue_id=f"OUTLIER_UNI_{col}",
                 issue_type="outlier",
@@ -112,19 +136,23 @@ def detect_outliers(df: pd.DataFrame, config: Optional[Config] = None) -> List[I
                 row_ids=outlier_row_ids,
                 sample_values=sample_vals,
                 severity=severity,
-                description=f"Column '{col}' has {outlier_count} statistical/domain outliers outside [{lower_bound:.2f}, {upper_bound:.2f}].",
+                description=desc,
                 detector="outlier_detector",
                 evidence={
-                    "method": "univariate_iqr_zscore",
+                    "method": "domain_range_constraint" if has_domain_violation else "univariate_iqr_zscore",
+                    "valid_range": f"[{domain_min}, {domain_max}]" if (domain_min is not None and domain_max is not None) else None,
+                    "invalid_values": df_with_id.loc[combined_outlier_mask, col].tolist(),
+                    "violation_type": "domain_range_violation" if has_domain_violation else "statistical_outlier",
                     "q25": q25,
                     "q75": q75,
                     "iqr": iqr,
-                    "lower_bound": lower_bound,
-                    "upper_bound": upper_bound,
+                    "lower_bound": domain_min if domain_min is not None else lower_bound,
+                    "upper_bound": domain_max if domain_max is not None else upper_bound,
                     "mean": mean,
                     "std": std,
                     "domain_bounds": {"min": domain_min, "max": domain_max},
-                    "outlier_count": outlier_count
+                    "outlier_count": outlier_count,
+                    "has_domain_violation": has_domain_violation,
                 }
             ))
 

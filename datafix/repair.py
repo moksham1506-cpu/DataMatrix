@@ -393,7 +393,8 @@ def repair_dataset(
             col = cols[0]
             domain_bounds = issue.evidence.get("domain_bounds", {})
             d_min = domain_bounds.get("min")
-            if d_min is not None and col in df_repaired.columns:
+            d_max = domain_bounds.get("max")
+            if (d_min is not None or d_max is not None) and col in df_repaired.columns:
                 valid_r_ids = [r for r in row_ids if r in df_repaired.index]
                 if valid_r_ids:
                     col_series = df_repaired.loc[valid_r_ids, col]
@@ -404,28 +405,42 @@ def repair_dataset(
                     for r_id in valid_r_ids:
                         old_val = col_series.at[r_id]
                         num_val = num_series.at[r_id]
-                        if pd.notna(num_val) and num_val < d_min:
-                            # Impossible negative (e.g. age -5 -> 5 or 0)
-                            corrected = abs(num_val)
-                            conf = calculate_repair_confidence(issue, "clamp_domain_outlier", old_val, corrected)
-                            status = "applied" if conf >= cfg.auto_apply_threshold else "suggested"
-                            entry = ChangeLogEntry(
-                                change_id=f"CHG_{uuid.uuid4().hex[:8]}",
-                                timestamp=ts_now,
-                                row_id=r_id,
-                                column=col,
-                                old_value=old_val,
-                                new_value=corrected,
-                                issue_id=issue.issue_id,
-                                strategy="clamp_domain_outlier",
-                                reason=f"Corrected negative value {old_val} to positive domain boundary {corrected}",
-                                confidence=conf,
-                                status=status
-                            )
-                            audit_log.add_entry(entry)
-                            if status == "applied":
-                                applied_r_ids.append(r_id)
-                                applied_vals.append(corrected)
+                        if pd.notna(num_val):
+                            corrected = None
+                            reason = None
+                            if d_min is not None and num_val < d_min:
+                                if pd.api.types.is_integer_dtype(df_repaired[col].dtype) and (isinstance(d_min, int) or float(d_min).is_integer()):
+                                    corrected = abs(int(num_val)) if d_min == 0 else int(d_min)
+                                else:
+                                    corrected = abs(num_val) if d_min == 0 else float(d_min)
+                                reason = f"Corrected out-of-range value {old_val} to minimum domain boundary {corrected}"
+                            elif d_max is not None and num_val > d_max:
+                                if pd.api.types.is_integer_dtype(df_repaired[col].dtype) and (isinstance(d_max, int) or float(d_max).is_integer()):
+                                    corrected = int(d_max)
+                                else:
+                                    corrected = float(d_max)
+                                reason = f"Clamped out-of-range value {old_val} to upper domain boundary {corrected}"
+
+                            if corrected is not None:
+                                conf = calculate_repair_confidence(issue, "clamp_domain_outlier", old_val, corrected)
+                                status = "applied" if conf >= cfg.auto_apply_threshold else "suggested"
+                                entry = ChangeLogEntry(
+                                    change_id=f"CHG_{uuid.uuid4().hex[:8]}",
+                                    timestamp=ts_now,
+                                    row_id=r_id,
+                                    column=col,
+                                    old_value=old_val,
+                                    new_value=corrected,
+                                    issue_id=issue.issue_id,
+                                    strategy="clamp_domain_outlier",
+                                    reason=reason,
+                                    confidence=conf,
+                                    status=status
+                                )
+                                audit_log.add_entry(entry)
+                                if status == "applied":
+                                    applied_r_ids.append(r_id)
+                                    applied_vals.append(corrected)
                     if applied_r_ids:
                         safe_assign(df_repaired, applied_r_ids, col, applied_vals)
 

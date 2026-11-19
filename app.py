@@ -105,6 +105,19 @@ def load_demo_data_cached() -> pd.DataFrame:
 
 
 @st.cache_data(show_spinner=False)
+def load_university_demo_cached() -> pd.DataFrame:
+    """Load the university student demo dataset from disk with caching."""
+    univ_paths = [
+        Path("data/university_student_demo.csv"),
+        Path(__file__).parent / "data" / "university_student_demo.csv",
+    ]
+    for p in univ_paths:
+        if p.exists():
+            return pd.read_csv(p)
+    raise FileNotFoundError("University demo dataset not found in data/ directory.")
+
+
+@st.cache_data(show_spinner=False)
 def load_benchmark_scoreboard_cached():
     """Retrieve ground-truth scoreboard metrics with caching."""
     from benchmark import get_benchmark_scoreboard
@@ -165,6 +178,7 @@ with tab1:
         st.write("")
         st.write("")
         load_demo_btn = st.button("🚀 Load Demo Dataset (5k rows)", use_container_width=True)
+        load_univ_btn = st.button("🎓 Load University Demo", use_container_width=True)
 
     # Process file upload or demo data trigger
     new_df = None
@@ -189,6 +203,18 @@ with tab1:
                 new_name = "demo_dataset.csv"
         except Exception as e:
             st.error(f"❌ Failed to load demo dataset: {e}")
+
+    elif load_univ_btn:
+        try:
+            univ_raw = load_university_demo_cached()
+            loaded_df, err = validate_and_load_file(univ_raw)
+            if err:
+                st.error(f"❌ {err}")
+            else:
+                new_df = loaded_df
+                new_name = "university_student_demo.csv"
+        except Exception as e:
+            st.error(f"❌ Failed to load university demo dataset: {e}")
 
     # If new dataset loaded, run pipeline and populate session state
     if new_df is not None and (st.session_state.df_raw is None or st.session_state.dataset_name != new_name):
