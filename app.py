@@ -230,9 +230,47 @@ with tab2:
         else:
             st.info("No issues match the selected filter criteria.")
 
+# =============================================================================
+# TAB 3: ROOT-CAUSE DIAGNOSIS
+# =============================================================================
 with tab3:
     st.header("Root-Cause Diagnosis")
-    st.info("Please load a dataset in Tab 1 to view root causes.")
+    st.markdown("The diagnostic engine clusters data quality defects into systemic root-cause patterns.")
+
+    if st.session_state.pipeline_result is None:
+        st.info("Please load a dataset in Tab 1 to view root causes.")
+    else:
+        diagnoses = st.session_state.pipeline_result.diagnoses
+        if not diagnoses:
+            st.info("No systemic root-cause patterns identified for the detected issues.")
+        else:
+            st.write(f"Identified **{len(diagnoses)} root-cause clusters** across detected issues:")
+
+            for idx, diag in enumerate(diagnoses, 1):
+                with st.container(border=True):
+                    head_col1, head_col2 = st.columns([4, 1])
+                    with head_col1:
+                        st.subheader(f"Cluster #{idx}: {diag.root_cause_label}")
+                    with head_col2:
+                        conf_pct = int(diag.confidence * 100)
+                        st.metric("Confidence", f"{conf_pct}%")
+
+                    # Metadata row
+                    c1, c2, c3 = st.columns(3)
+                    c1.write(f"**Affected Columns:** `{', '.join(diag.affected_columns)}`")
+                    c2.write(f"**Affected Rows:** `{diag.affected_row_count:,}`")
+                    c3.write(f"**Linked Issues:** `{len(diag.issue_ids)}`")
+
+                    # Explanation and Recommendation
+                    if diag.explanation:
+                        st.write(f"💡 **Diagnosis:** {diag.explanation}")
+                    if diag.recommended_action:
+                        st.write(f"🛠️ **Recommended Action:** {diag.recommended_action}")
+
+                    # Evidence display
+                    if diag.evidence:
+                        with st.expander("🔬 Supporting Statistical Evidence", expanded=False):
+                            st.json(diag.evidence)
 
 with tab4:
     st.header("Repair Review")
