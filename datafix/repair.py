@@ -32,6 +32,8 @@ def repair_dataset(
     cfg = config or Config()
     # Never mutate original df
     df_repaired = ensure_row_id(df).copy()
+    # Index by _row_id for O(1) cell access and high-throughput repairs
+    df_repaired.index = df_repaired["_row_id"]
     audit_log = AuditLog()
     disguised_set = set(t.lower() for t in cfg.disguised_nulls)
 
@@ -64,11 +66,14 @@ def repair_dataset(
 
             # A. Numeric stored as text (e.g. $1,450.00, USD 250)
             if issue.evidence.get("format_type") == "numeric_as_text":
-                for r_id in row_ids:
-                    row_mask = df_repaired["_row_id"] == r_id
-                    if not row_mask.any():
-                        continue
-                    old_val = df_repaired.loc[row_mask, col].values[0]
+                valid_r_ids = [r for r in row_ids if r in df_repaired.index]
+                if not valid_r_ids:
+                    continue
+                col_series = df_repaired.loc[valid_r_ids, col]
+                applied_r_ids = []
+                applied_vals = []
+                ts_now = datetime.now(timezone.utc).isoformat()
+                for r_id, old_val in col_series.items():
                     if pd.isna(old_val):
                         continue
                     
@@ -84,7 +89,7 @@ def repair_dataset(
                         
                         entry = ChangeLogEntry(
                             change_id=f"CHG_{uuid.uuid4().hex[:8]}",
-                            timestamp=datetime.now(timezone.utc).isoformat(),
+                            timestamp=ts_now,
                             row_id=r_id,
                             column=col,
                             old_value=old_val,
@@ -97,63 +102,74 @@ def repair_dataset(
                         )
                         audit_log.add_entry(entry)
                         if status == "applied":
-                            safe_assign(df_repaired, row_mask, col, new_val)
+                            applied_r_ids.append(r_id)
+                            applied_vals.append(new_val)
                     except Exception:
                         pass
+                if applied_r_ids:
+                    safe_assign(df_repaired, applied_r_ids, col, applied_vals)
 
             # B. Date formats (e.g. DD/MM/YYYY, 2022.05.18 -> YYYY-MM-DD)
             elif "dominant_format" in issue.evidence or "DATE" in issue.issue_id:
-                for r_id in row_ids:
-                    row_mask = df_repaired["_row_id"] == r_id
-                    if not row_mask.any():
-                        continue
-                    old_val = df_repaired.loc[row_mask, col].values[0]
-                    if pd.isna(old_val) or str(old_val).lower() in disguised_set:
-                        continue
+                valid_r_ids = [r for r in row_ids if r in df_repaired.index]
+                if not valid_r_ids:
+                    continue
+                col_series = df_repaired.loc[valid_r_ids, col]
+                valid_mask = col_series.notna() & ~col_series.astype(str).str.lower().isin(disguised_set)
+                valid_items = col_series[valid_mask]
+                parsed_series = pd.to_datetime(valid_items.astype(str), errors="coerce", format="mixed")
+                
+                applied_r_ids = []
+                applied_vals = []
+                ts_now = datetime.now(timezone.utc).isoformat()
 
-                    try:
-                        parsed_dt = pd.to_datetime(str(old_val), errors="coerce", format="mixed")
-                        if pd.notna(parsed_dt):
-                            new_val = parsed_dt.strftime("%Y-%m-%d")
-                            conf = calculate_repair_confidence(issue, "standardize_date_format", old_val, new_val, {"is_valid_date": True})
-                            status = "applied" if conf >= cfg.auto_apply_threshold else "suggested"
-                            reason = f"Standardized date string '{old_val}' to ISO format '{new_val}'"
-                        else:
-                            new_val = old_val
-                            conf = 0.50
-                            status = "suggested"
-                            reason = f"Unparseable date '{old_val}' flagged for manual review"
-
-                        entry = ChangeLogEntry(
-                            change_id=f"CHG_{uuid.uuid4().hex[:8]}",
-                            timestamp=datetime.now(timezone.utc).isoformat(),
-                            row_id=r_id,
-                            column=col,
-                            old_value=old_val,
-                            new_value=new_val,
-                            issue_id=issue.issue_id,
-                            strategy="standardize_date_format",
-                            reason=reason,
-                            confidence=conf,
-                            status=status
-                        )
-                        audit_log.add_entry(entry)
+                for r_id in valid_items.index:
+                    old_val = valid_items.at[r_id]
+                    parsed_dt = parsed_series.at[r_id]
+                    if pd.notna(parsed_dt):
+                        new_val = parsed_dt.strftime("%Y-%m-%d")
+                        conf = calculate_repair_confidence(issue, "standardize_date_format", old_val, new_val, {"is_valid_date": True})
+                        status = "applied" if conf >= cfg.auto_apply_threshold else "suggested"
+                        reason = f"Standardized date string '{old_val}' to ISO format '{new_val}'"
                         if status == "applied":
-                            safe_assign(df_repaired, row_mask, col, new_val)
-                    except Exception:
-                        pass
+                            applied_r_ids.append(r_id)
+                            applied_vals.append(new_val)
+                    else:
+                        new_val = old_val
+                        conf = 0.50
+                        status = "suggested"
+                        reason = f"Unparseable date '{old_val}' flagged for manual review"
+
+                    entry = ChangeLogEntry(
+                        change_id=f"CHG_{uuid.uuid4().hex[:8]}",
+                        timestamp=ts_now,
+                        row_id=r_id,
+                        column=col,
+                        old_value=old_val,
+                        new_value=new_val,
+                        issue_id=issue.issue_id,
+                        strategy="standardize_date_format",
+                        reason=reason,
+                        confidence=conf,
+                        status=status
+                    )
+                    audit_log.add_entry(entry)
+
+                if applied_r_ids:
+                    safe_assign(df_repaired, applied_r_ids, col, applied_vals)
 
             # C. Malformed Emails
             elif issue.evidence.get("format_type") == "email":
-                for r_id in row_ids:
-                    row_mask = df_repaired["_row_id"] == r_id
-                    if not row_mask.any():
-                        continue
-                    old_val = df_repaired.loc[row_mask, col].values[0]
+                valid_r_ids = [r for r in row_ids if r in df_repaired.index]
+                if not valid_r_ids:
+                    continue
+                col_series = df_repaired.loc[valid_r_ids, col]
+                ts_now = datetime.now(timezone.utc).isoformat()
+                for r_id, old_val in col_series.items():
                     # Emails cannot be safely invented without external confirmation
                     entry = ChangeLogEntry(
                         change_id=f"CHG_{uuid.uuid4().hex[:8]}",
-                        timestamp=datetime.now(timezone.utc).isoformat(),
+                        timestamp=ts_now,
                         row_id=r_id,
                         column=col,
                         old_value=old_val,
@@ -196,34 +212,39 @@ def repair_dataset(
                             strat = "fuzzy_category_mapping"
                         variant_to_canonical[str(var).strip().lower()] = (canon, strat, conf)
 
-            for r_id in row_ids:
-                row_mask = df_repaired["_row_id"] == r_id
-                if not row_mask.any():
-                    continue
-                old_val = df_repaired.loc[row_mask, col].values[0]
-                if pd.isna(old_val):
-                    continue
+            valid_r_ids = [r for r in row_ids if r in df_repaired.index]
+            if valid_r_ids:
+                col_series = df_repaired.loc[valid_r_ids, col]
+                applied_r_ids = []
+                applied_vals = []
+                ts_now = datetime.now(timezone.utc).isoformat()
+                for r_id, old_val in col_series.items():
+                    if pd.isna(old_val):
+                        continue
 
-                lookup_key = str(old_val).strip().lower()
-                if lookup_key in variant_to_canonical:
-                    canon, strat, conf = variant_to_canonical[lookup_key]
-                    status = "applied" if conf >= cfg.auto_apply_threshold else "suggested"
-                    entry = ChangeLogEntry(
-                        change_id=f"CHG_{uuid.uuid4().hex[:8]}",
-                        timestamp=datetime.now(timezone.utc).isoformat(),
-                        row_id=r_id,
-                        column=col,
-                        old_value=old_val,
-                        new_value=canon,
-                        issue_id=issue.issue_id,
-                        strategy=strat,
-                        reason=f"Mapped category variant '{old_val}' to canonical form '{canon}'",
-                        confidence=conf,
-                        status=status
-                    )
-                    audit_log.add_entry(entry)
-                    if status == "applied":
-                        safe_assign(df_repaired, row_mask, col, canon)
+                    lookup_key = str(old_val).strip().lower()
+                    if lookup_key in variant_to_canonical:
+                        canon, strat, conf = variant_to_canonical[lookup_key]
+                        status = "applied" if conf >= cfg.auto_apply_threshold else "suggested"
+                        entry = ChangeLogEntry(
+                            change_id=f"CHG_{uuid.uuid4().hex[:8]}",
+                            timestamp=ts_now,
+                            row_id=r_id,
+                            column=col,
+                            old_value=old_val,
+                            new_value=canon,
+                            issue_id=issue.issue_id,
+                            strategy=strat,
+                            reason=f"Mapped category variant '{old_val}' to canonical form '{canon}'",
+                            confidence=conf,
+                            status=status
+                        )
+                        audit_log.add_entry(entry)
+                        if status == "applied":
+                            applied_r_ids.append(r_id)
+                            applied_vals.append(canon)
+                if applied_r_ids:
+                    safe_assign(df_repaired, applied_r_ids, col, applied_vals)
 
         # ---------------------------------------------------------------------
         # 3. REPAIR MISSING VALUES & DISGUISED NULLS
@@ -233,46 +254,48 @@ def repair_dataset(
             if col not in df_repaired.columns:
                 continue
 
-            for r_id in row_ids:
-                row_mask = df_repaired["_row_id"] == r_id
-                if not row_mask.any():
-                    continue
-                old_val = df_repaired.loc[row_mask, col].values[0]
-
-                # If disguised null string -> convert to np.nan
-                if pd.notna(old_val) and str(old_val).strip().lower() in disguised_set:
-                    conf = calculate_repair_confidence(issue, "standardize_disguised_null", old_val, np.nan)
-                    entry = ChangeLogEntry(
-                        change_id=f"CHG_{uuid.uuid4().hex[:8]}",
-                        timestamp=datetime.now(timezone.utc).isoformat(),
-                        row_id=r_id,
-                        column=col,
-                        old_value=old_val,
-                        new_value=np.nan,
-                        issue_id=issue.issue_id,
-                        strategy="standardize_disguised_null",
-                        reason=f"Standardized disguised null string '{old_val}' to native null",
-                        confidence=conf,
-                        status="applied"
-                    )
-                    audit_log.add_entry(entry)
-                    safe_assign(df_repaired, row_mask, col, np.nan)
-                elif pd.isna(old_val):
-                    # Flag missing value without guessing private personal identifiers
-                    entry = ChangeLogEntry(
-                        change_id=f"CHG_{uuid.uuid4().hex[:8]}",
-                        timestamp=datetime.now(timezone.utc).isoformat(),
-                        row_id=r_id,
-                        column=col,
-                        old_value=None,
-                        new_value=None,
-                        issue_id=issue.issue_id,
-                        strategy="flag_missing_value",
-                        reason=f"Missing value in '{col}' flagged for user action",
-                        confidence=0.50,
-                        status="suggested"
-                    )
-                    audit_log.add_entry(entry)
+            valid_r_ids = [r for r in row_ids if r in df_repaired.index]
+            if valid_r_ids:
+                col_series = df_repaired.loc[valid_r_ids, col]
+                applied_r_ids = []
+                ts_now = datetime.now(timezone.utc).isoformat()
+                for r_id, old_val in col_series.items():
+                    # If disguised null string -> convert to np.nan
+                    if pd.notna(old_val) and str(old_val).strip().lower() in disguised_set:
+                        conf = calculate_repair_confidence(issue, "standardize_disguised_null", old_val, np.nan)
+                        entry = ChangeLogEntry(
+                            change_id=f"CHG_{uuid.uuid4().hex[:8]}",
+                            timestamp=ts_now,
+                            row_id=r_id,
+                            column=col,
+                            old_value=old_val,
+                            new_value=np.nan,
+                            issue_id=issue.issue_id,
+                            strategy="standardize_disguised_null",
+                            reason=f"Standardized disguised null string '{old_val}' to native null",
+                            confidence=conf,
+                            status="applied"
+                        )
+                        audit_log.add_entry(entry)
+                        applied_r_ids.append(r_id)
+                    elif pd.isna(old_val):
+                        # Flag missing value without guessing private personal identifiers
+                        entry = ChangeLogEntry(
+                            change_id=f"CHG_{uuid.uuid4().hex[:8]}",
+                            timestamp=ts_now,
+                            row_id=r_id,
+                            column=col,
+                            old_value=None,
+                            new_value=None,
+                            issue_id=issue.issue_id,
+                            strategy="flag_missing_value",
+                            reason=f"Missing value in '{col}' flagged for user action",
+                            confidence=0.50,
+                            status="suggested"
+                        )
+                        audit_log.add_entry(entry)
+                if applied_r_ids:
+                    safe_assign(df_repaired, applied_r_ids, col, np.nan)
 
         # ---------------------------------------------------------------------
         # 4. REPAIR RELATIONSHIP VIOLATIONS
@@ -283,41 +306,51 @@ def repair_dataset(
             # Arithmetic recalculation: total = quantity * unit_price
             if v_type == "arithmetic_mismatch" and len(cols) == 3:
                 qty_col, price_col, total_col = cols[0], cols[1], cols[2]
-                for r_id in row_ids:
-                    row_mask = df_repaired["_row_id"] == r_id
-                    if not row_mask.any():
-                        continue
-                    old_total = df_repaired.loc[row_mask, total_col].values[0]
-                    qty = pd.to_numeric(df_repaired.loc[row_mask, qty_col].values[0], errors="coerce")
-                    price = pd.to_numeric(df_repaired.loc[row_mask, price_col].values[0], errors="coerce")
+                valid_r_ids = [r for r in row_ids if r in df_repaired.index]
+                if valid_r_ids:
+                    sub_df = df_repaired.loc[valid_r_ids, [qty_col, price_col, total_col]]
+                    num_qtys = pd.to_numeric(sub_df[qty_col], errors="coerce")
+                    num_prices = pd.to_numeric(sub_df[price_col], errors="coerce")
+                    old_totals = sub_df[total_col]
+                    applied_r_ids = []
+                    applied_vals = []
+                    ts_now = datetime.now(timezone.utc).isoformat()
+                    for r_id in valid_r_ids:
+                        qty = num_qtys.at[r_id]
+                        price = num_prices.at[r_id]
+                        old_total = old_totals.at[r_id]
 
-                    if pd.notna(qty) and pd.notna(price) and qty > 0 and price >= 0:
-                        recomputed = round(float(qty) * float(price), 2)
-                        conf = calculate_repair_confidence(issue, "recalculate_arithmetic_total", old_total, recomputed)
-                        status = "applied" if conf >= cfg.auto_apply_threshold else "suggested"
-                        entry = ChangeLogEntry(
-                            change_id=f"CHG_{uuid.uuid4().hex[:8]}",
-                            timestamp=datetime.now(timezone.utc).isoformat(),
-                            row_id=r_id,
-                            column=total_col,
-                            old_value=old_total,
-                            new_value=recomputed,
-                            issue_id=issue.issue_id,
-                            strategy="recalculate_arithmetic_total",
-                            reason=f"Recalculated '{total_col}' from {qty_col} ({qty}) * {price_col} ({price}) = {recomputed}",
-                            confidence=conf,
-                            status=status
-                        )
-                        audit_log.add_entry(entry)
-                        if status == "applied":
-                            safe_assign(df_repaired, row_mask, total_col, recomputed)
+                        if pd.notna(qty) and pd.notna(price) and qty > 0 and price >= 0:
+                            recomputed = round(float(qty) * float(price), 2)
+                            conf = calculate_repair_confidence(issue, "recalculate_arithmetic_total", old_total, recomputed)
+                            status = "applied" if conf >= cfg.auto_apply_threshold else "suggested"
+                            entry = ChangeLogEntry(
+                                change_id=f"CHG_{uuid.uuid4().hex[:8]}",
+                                timestamp=ts_now,
+                                row_id=r_id,
+                                column=total_col,
+                                old_value=old_total,
+                                new_value=recomputed,
+                                issue_id=issue.issue_id,
+                                strategy="recalculate_arithmetic_total",
+                                reason=f"Recalculated '{total_col}' from {qty_col} ({qty}) * {price_col} ({price}) = {recomputed}",
+                                confidence=conf,
+                                status=status
+                            )
+                            audit_log.add_entry(entry)
+                            if status == "applied":
+                                applied_r_ids.append(r_id)
+                                applied_vals.append(recomputed)
+                    if applied_r_ids:
+                        safe_assign(df_repaired, applied_r_ids, total_col, applied_vals)
 
             # Inverted chronological timestamps (delivery < order)
             elif v_type == "chronological_inversion":
+                ts_now = datetime.now(timezone.utc).isoformat()
                 for r_id in row_ids:
                     entry = ChangeLogEntry(
                         change_id=f"CHG_{uuid.uuid4().hex[:8]}",
-                        timestamp=datetime.now(timezone.utc).isoformat(),
+                        timestamp=ts_now,
                         row_id=r_id,
                         column=cols[1] if len(cols) > 1 else cols[0],
                         old_value="Inverted",
@@ -333,25 +366,25 @@ def repair_dataset(
             # Orphan foreign keys
             elif v_type == "orphan_foreign_key":
                 col = cols[0]
-                for r_id in row_ids:
-                    row_mask = df_repaired["_row_id"] == r_id
-                    if not row_mask.any():
-                        continue
-                    old_fk = df_repaired.loc[row_mask, col].values[0]
-                    entry = ChangeLogEntry(
-                        change_id=f"CHG_{uuid.uuid4().hex[:8]}",
-                        timestamp=datetime.now(timezone.utc).isoformat(),
-                        row_id=r_id,
-                        column=col,
-                        old_value=old_fk,
-                        new_value=old_fk,
-                        issue_id=issue.issue_id,
-                        strategy="orphan_foreign_key_flag",
-                        reason=f"Orphan foreign key '{old_fk}' missing in parent table; flagged for manual review",
-                        confidence=0.50,
-                        status="suggested"
-                    )
-                    audit_log.add_entry(entry)
+                valid_r_ids = [r for r in row_ids if r in df_repaired.index]
+                if valid_r_ids:
+                    col_series = df_repaired.loc[valid_r_ids, col]
+                    ts_now = datetime.now(timezone.utc).isoformat()
+                    for r_id, old_fk in col_series.items():
+                        entry = ChangeLogEntry(
+                            change_id=f"CHG_{uuid.uuid4().hex[:8]}",
+                            timestamp=ts_now,
+                            row_id=r_id,
+                            column=col,
+                            old_value=old_fk,
+                            new_value=old_fk,
+                            issue_id=issue.issue_id,
+                            strategy="orphan_foreign_key_flag",
+                            reason=f"Orphan foreign key '{old_fk}' missing in parent table; flagged for manual review",
+                            confidence=0.50,
+                            status="suggested"
+                        )
+                        audit_log.add_entry(entry)
 
         # ---------------------------------------------------------------------
         # 5. REPAIR OUTLIERS (Domain Boundary Clamping)
@@ -361,33 +394,40 @@ def repair_dataset(
             domain_bounds = issue.evidence.get("domain_bounds", {})
             d_min = domain_bounds.get("min")
             if d_min is not None and col in df_repaired.columns:
-                for r_id in row_ids:
-                    row_mask = df_repaired["_row_id"] == r_id
-                    if not row_mask.any():
-                        continue
-                    old_val = df_repaired.loc[row_mask, col].values[0]
-                    num_val = pd.to_numeric(old_val, errors="coerce")
-                    if pd.notna(num_val) and num_val < d_min:
-                        # Impossible negative (e.g. age -5 -> 5 or 0)
-                        corrected = abs(num_val)
-                        conf = calculate_repair_confidence(issue, "clamp_domain_outlier", old_val, corrected)
-                        status = "applied" if conf >= cfg.auto_apply_threshold else "suggested"
-                        entry = ChangeLogEntry(
-                            change_id=f"CHG_{uuid.uuid4().hex[:8]}",
-                            timestamp=datetime.now(timezone.utc).isoformat(),
-                            row_id=r_id,
-                            column=col,
-                            old_value=old_val,
-                            new_value=corrected,
-                            issue_id=issue.issue_id,
-                            strategy="clamp_domain_outlier",
-                            reason=f"Corrected negative value {old_val} to positive domain boundary {corrected}",
-                            confidence=conf,
-                            status=status
-                        )
-                        audit_log.add_entry(entry)
-                        if status == "applied":
-                            safe_assign(df_repaired, row_mask, col, corrected)
+                valid_r_ids = [r for r in row_ids if r in df_repaired.index]
+                if valid_r_ids:
+                    col_series = df_repaired.loc[valid_r_ids, col]
+                    num_series = pd.to_numeric(col_series, errors="coerce")
+                    applied_r_ids = []
+                    applied_vals = []
+                    ts_now = datetime.now(timezone.utc).isoformat()
+                    for r_id in valid_r_ids:
+                        old_val = col_series.at[r_id]
+                        num_val = num_series.at[r_id]
+                        if pd.notna(num_val) and num_val < d_min:
+                            # Impossible negative (e.g. age -5 -> 5 or 0)
+                            corrected = abs(num_val)
+                            conf = calculate_repair_confidence(issue, "clamp_domain_outlier", old_val, corrected)
+                            status = "applied" if conf >= cfg.auto_apply_threshold else "suggested"
+                            entry = ChangeLogEntry(
+                                change_id=f"CHG_{uuid.uuid4().hex[:8]}",
+                                timestamp=ts_now,
+                                row_id=r_id,
+                                column=col,
+                                old_value=old_val,
+                                new_value=corrected,
+                                issue_id=issue.issue_id,
+                                strategy="clamp_domain_outlier",
+                                reason=f"Corrected negative value {old_val} to positive domain boundary {corrected}",
+                                confidence=conf,
+                                status=status
+                            )
+                            audit_log.add_entry(entry)
+                            if status == "applied":
+                                applied_r_ids.append(r_id)
+                                applied_vals.append(corrected)
+                    if applied_r_ids:
+                        safe_assign(df_repaired, applied_r_ids, col, applied_vals)
 
         # ---------------------------------------------------------------------
         # 6. REPAIR DUPLICATES (Exact Rows Only)
@@ -402,10 +442,7 @@ def repair_dataset(
                 current_dup_ids = set(df_repaired.loc[dup_mask, "_row_id"].tolist()).union(set(row_ids))
                 
                 for r_id in current_dup_ids:
-                    if r_id in rows_to_drop:
-                        continue
-                    row_mask = df_repaired["_row_id"] == r_id
-                    if not row_mask.any():
+                    if r_id in rows_to_drop or r_id not in df_repaired.index:
                         continue
                     conf = 0.95
                     entry = ChangeLogEntry(
@@ -446,4 +483,5 @@ def repair_dataset(
     if rows_to_drop:
         df_repaired = df_repaired[~df_repaired["_row_id"].isin(rows_to_drop)].copy()
 
+    df_repaired = df_repaired.reset_index(drop=True)
     return df_repaired, audit_log

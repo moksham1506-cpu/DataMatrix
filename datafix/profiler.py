@@ -77,7 +77,7 @@ def safe_assign(df: pd.DataFrame, mask: Any, col: str, val: Any) -> None:
     if hasattr(mask, "any"):
         if not mask.any():
             return
-    elif not mask:
+    elif mask is None or (isinstance(mask, (list, tuple, set)) and len(mask) == 0):
         return
 
     try:
