@@ -186,7 +186,7 @@ def compute_collateral_damage(
 
         # Check differences (ignoring NaN == NaN)
         diff_mask = (orig_col != rep_col) & ~(orig_col.isna() & rep_col.isna())
-        diff_rows = common_row_ids[diff_mask]
+        diff_rows = diff_mask[diff_mask].index
 
         for r_id in diff_rows:
             total_cells_changed += 1

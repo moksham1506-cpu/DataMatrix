@@ -144,10 +144,12 @@ with tab1:
         st.divider()
         st.subheader("Dataset Summary & Key Dimensions")
         kpi1, kpi2, kpi3, kpi4 = st.columns(4)
-        kpi1.metric("Total Rows", f"{profile.total_rows:,}")
-        kpi2.metric("Total Columns", f"{profile.total_columns}")
+        kpi1.metric("Total Rows", f"{profile.row_count:,}")
+        kpi2.metric("Total Columns", f"{profile.column_count}")
         kpi3.metric("Memory Usage", f"{profile.memory_bytes / 1024:.1f} KB")
-        kpi4.metric("Overall Missingness", f"{profile.overall_missing_pct:.2f}%")
+        total_cells = max(profile.row_count * profile.column_count, 1)
+        total_nulls = sum(cp.null_count for cp in profile.column_profiles.values())
+        kpi4.metric("Overall Missingness", f"{(total_nulls / total_cells) * 100:.2f}%")
 
         st.subheader("Column Profiles & Inferred Types")
         col_summary_data = []
@@ -158,8 +160,8 @@ with tab1:
                 "Column": col_name,
                 "Inferred Type": cprof.inferred_type,
                 "Null Count": cprof.null_count,
-                "Null %": f"{cprof.null_pct:.1f}%",
-                "Distinct Values": cprof.distinct_count,
+                "Null %": f"{cprof.null_ratio * 100:.1f}%",
+                "Distinct Values": cprof.unique_count,
                 "Sample Values": ", ".join(str(v) for v in cprof.sample_values[:3])
             })
         st.dataframe(pd.DataFrame(col_summary_data), use_container_width=True)
@@ -303,8 +305,8 @@ with tab4:
             act_col1, act_col2 = st.columns([1, 2])
             with act_col1:
                 st.subheader("⚡ Bulk Action")
-                if st.button("Apply all above threshold (≥ 0.85)", use_container_width=True):
-                    approved_count = apply_bulk_threshold(audit_log, threshold=0.85)
+                if st.button("Apply all above threshold (≥ 0.70)", use_container_width=True):
+                    approved_count = apply_bulk_threshold(audit_log, threshold=0.70)
                     # Sync decisions
                     for e in audit_log.entries:
                         st.session_state.decisions[e.change_id] = e.status
@@ -410,30 +412,30 @@ with tab5:
             {
                 "Dimension": "Completeness",
                 "Weight": "30%",
-                "Score Before": f"{mb.completeness_score:.1f}",
-                "Score After": f"{ma.completeness_score:.1f}",
-                "Delta": f"{ma.completeness_score - mb.completeness_score:+.1f}"
+                "Score Before": f"{mb.completeness:.1f}",
+                "Score After": f"{ma.completeness:.1f}",
+                "Delta": f"{ma.completeness - mb.completeness:+.1f}"
             },
             {
                 "Dimension": "Validity",
                 "Weight": "30%",
-                "Score Before": f"{mb.validity_score:.1f}",
-                "Score After": f"{ma.validity_score:.1f}",
-                "Delta": f"{ma.validity_score - mb.validity_score:+.1f}"
+                "Score Before": f"{mb.validity:.1f}",
+                "Score After": f"{ma.validity:.1f}",
+                "Delta": f"{ma.validity - mb.validity:+.1f}"
             },
             {
                 "Dimension": "Uniqueness",
                 "Weight": "20%",
-                "Score Before": f"{mb.uniqueness_score:.1f}",
-                "Score After": f"{ma.uniqueness_score:.1f}",
-                "Delta": f"{ma.uniqueness_score - mb.uniqueness_score:+.1f}"
+                "Score Before": f"{mb.uniqueness:.1f}",
+                "Score After": f"{ma.uniqueness:.1f}",
+                "Delta": f"{ma.uniqueness - mb.uniqueness:+.1f}"
             },
             {
                 "Dimension": "Consistency",
                 "Weight": "20%",
-                "Score Before": f"{mb.consistency_score:.1f}",
-                "Score After": f"{ma.consistency_score:.1f}",
-                "Delta": f"{ma.consistency_score - mb.consistency_score:+.1f}"
+                "Score Before": f"{mb.consistency:.1f}",
+                "Score After": f"{ma.consistency:.1f}",
+                "Delta": f"{ma.consistency - mb.consistency:+.1f}"
             },
         ]
         st.dataframe(pd.DataFrame(dim_data), use_container_width=True)

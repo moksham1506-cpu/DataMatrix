@@ -28,6 +28,15 @@ def validate_and_load_file(uploaded_file: Any) -> Tuple[Optional[pd.DataFrame], 
     if uploaded_file is None:
         return None, "No file provided."
 
+    # Handle DataFrame directly
+    if isinstance(uploaded_file, pd.DataFrame):
+        df = uploaded_file.copy()
+        if df.empty or len(df) == 0:
+            return None, "The dataset contains 0 rows. Please upload a dataset with data rows."
+        if len(df.columns) <= 1:
+            return None, "Dataset contains only a single column. Please verify delimiter or file structure."
+        return ensure_row_id(df), None
+
     # Determine filename
     filename = ""
     if hasattr(uploaded_file, "name"):

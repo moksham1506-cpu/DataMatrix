@@ -56,9 +56,11 @@ NUMERIC_CLEAN_REGEX = re.compile(r"^[\s$€£¥,]*[-+]?[0-9]+(\.[0-9]+)?[\s%]*$"
 
 def ensure_row_id(df: pd.DataFrame) -> pd.DataFrame:
     """Assign a stable `_row_id` column without mutating the original DataFrame."""
-    if "_row_id" in df.columns:
+    if "_row_id" in df.columns and df["_row_id"].is_unique:
         return df.copy()
     df_copy = df.copy()
+    if "_row_id" in df_copy.columns:
+        df_copy = df_copy.drop(columns=["_row_id"])
     df_copy.insert(0, "_row_id", np.arange(len(df_copy), dtype=np.int64))
     return df_copy
 
