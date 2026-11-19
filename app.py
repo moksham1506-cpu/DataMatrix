@@ -468,6 +468,66 @@ with tab5:
         else:
             st.success("🎉 All detected quality issues have been completely resolved!")
 
+# =============================================================================
+# TAB 6: EXPORT
+# =============================================================================
 with tab6:
-    st.header("Export")
-    st.info("Please load a dataset in Tab 1 to export results.")
+    st.header("Export Cleaned Data & Verification Artifacts")
+    st.markdown("Download verified datasets and complete audit artifacts. All exports strictly reflect your approval and rejection decisions.")
+
+    if (st.session_state.df_raw is None or 
+        st.session_state.df_repaired is None or 
+        st.session_state.audit_log is None or
+        st.session_state.pipeline_result is None):
+        st.info("Please load a dataset in Tab 1 to export results.")
+    else:
+        # Generate export bundle reflecting user's approvals and rejections
+        clean_name = (st.session_state.dataset_name or "dataset").replace(".csv", "").replace(".xlsx", "").replace(".xls", "").lower()
+        
+        bundle = generate_export_bundle(
+            original_df=st.session_state.df_raw,
+            repaired_df=st.session_state.df_repaired,
+            audit_log=st.session_state.audit_log,
+            issues_before=st.session_state.pipeline_result.issues_before,
+            diagnoses=st.session_state.pipeline_result.diagnoses,
+            dataset_name=clean_name
+        )
+
+        st.subheader("📦 Download Verification Package")
+        dcol1, dcol2 = st.columns(2)
+        with dcol1:
+            st.download_button(
+                label="📥 Download Cleaned Dataset (CSV)",
+                data=bundle["cleaned_csv"],
+                file_name=f"cleaned_{clean_name}.csv",
+                mime="text/csv",
+                use_container_width=True
+            )
+            st.download_button(
+                label="📋 Download Change Log (CSV)",
+                data=bundle["change_log_csv"],
+                file_name=f"change_log_{clean_name}.csv",
+                mime="text/csv",
+                use_container_width=True
+            )
+
+        with dcol2:
+            st.download_button(
+                label="🌐 Download HTML Quality Report",
+                data=bundle["quality_report_html"],
+                file_name=f"quality_report_{clean_name}.html",
+                mime="text/html",
+                use_container_width=True
+            )
+            st.download_button(
+                label="🧾 Download Change Log (JSON)",
+                data=bundle["change_log_json"],
+                file_name=f"change_log_{clean_name}.json",
+                mime="application/json",
+                use_container_width=True
+            )
+
+        st.success("✅ Exports are synchronized with your review decisions.")
+
+        with st.expander("📄 Preview Audit Trail JSON", expanded=False):
+            st.code(bundle["change_log_json"][:2000] + ("\n... [truncated]" if len(bundle["change_log_json"]) > 2000 else ""), language="json")
