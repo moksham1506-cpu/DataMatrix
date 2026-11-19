@@ -272,9 +272,99 @@ with tab3:
                         with st.expander("🔬 Supporting Statistical Evidence", expanded=False):
                             st.json(diag.evidence)
 
+# =============================================================================
+# TAB 4: REPAIR REVIEW
+# =============================================================================
 with tab4:
-    st.header("Repair Review")
-    st.info("Please load a dataset in Tab 1 to view repairs.")
+    st.header("Repair Review & Audit Decisions")
+    st.markdown("Inspect proposed data repairs. High-confidence repairs are applied automatically; lower confidence repairs are suggested for human review.")
+
+    if st.session_state.pipeline_result is None or st.session_state.audit_log is None:
+        st.info("Please load a dataset in Tab 1 to view repairs.")
+    else:
+        audit_log = st.session_state.audit_log
+        entries = audit_log.entries
+
+        if not entries:
+            st.info("No modifications or suggestions recorded for this dataset.")
+        else:
+            # Status summary metrics
+            counts = audit_log.summary()
+            rc1, rc2, rc3, rc4 = st.columns(4)
+            rc1.metric("Applied Automatically", counts.get("applied", 0))
+            rc2.metric("Pending Suggestions", counts.get("suggested", 0))
+            rc3.metric("User Approved", counts.get("approved", 0))
+            rc4.metric("User Rejected", counts.get("rejected", 0))
+
+            st.divider()
+
+            # Bulk Action and Single-Change Action controls
+            act_col1, act_col2 = st.columns([1, 2])
+            with act_col1:
+                st.subheader("⚡ Bulk Action")
+                if st.button("Apply all above threshold (≥ 0.85)", use_container_width=True):
+                    approved_count = apply_bulk_threshold(audit_log, threshold=0.85)
+                    # Sync decisions
+                    for e in audit_log.entries:
+                        st.session_state.decisions[e.change_id] = e.status
+                    # Recompute repaired DataFrame
+                    df_repaired, audit_log = apply_change_decisions(
+                        st.session_state.df_raw, audit_log, st.session_state.decisions
+                    )
+                    st.session_state.df_repaired = df_repaired
+                    st.session_state.audit_log = audit_log
+                    st.success(f"Applied {approved_count} changes above threshold!")
+                    st.rerun()
+
+            with act_col2:
+                st.subheader("✍️ Approve / Reject Individual Change")
+                change_options = [
+                    f"{e.change_id} | Row {e.row_id} | Col: {e.column} | [{e.status.upper()}] (Conf: {e.confidence:.2f})"
+                    for e in entries
+                ]
+                sel_change_str = st.selectbox("Select Change", options=change_options)
+                sel_change_id = sel_change_str.split(" | ")[0] if sel_change_str else None
+
+                btn_col1, btn_col2 = st.columns(2)
+                with btn_col1:
+                    if st.button("✅ Approve Selected", use_container_width=True):
+                        st.session_state.decisions[sel_change_id] = "approved"
+                        df_repaired, audit_log = apply_change_decisions(
+                            st.session_state.df_raw, audit_log, st.session_state.decisions
+                        )
+                        st.session_state.df_repaired = df_repaired
+                        st.session_state.audit_log = audit_log
+                        st.success(f"Approved change {sel_change_id}")
+                        st.rerun()
+                with btn_col2:
+                    if st.button("❌ Reject Selected", use_container_width=True):
+                        st.session_state.decisions[sel_change_id] = "rejected"
+                        df_repaired, audit_log = apply_change_decisions(
+                            st.session_state.df_raw, audit_log, st.session_state.decisions
+                        )
+                        st.session_state.df_repaired = df_repaired
+                        st.session_state.audit_log = audit_log
+                        st.warning(f"Rejected change {sel_change_id}")
+                        st.rerun()
+
+            st.divider()
+
+            # Table of Changes
+            st.subheader("Audit Trail: Table of Changes")
+            table_rows = []
+            for e in entries:
+                table_rows.append({
+                    "change_id": e.change_id,
+                    "row_id": e.row_id,
+                    "column": e.column,
+                    "old_value": str(e.old_value),
+                    "new_value": str(e.new_value),
+                    "confidence": round(e.confidence, 3),
+                    "reason": e.reason,
+                    "status": e.status
+                })
+            df_changes = pd.DataFrame(table_rows)
+            st.dataframe(df_changes, use_container_width=True)
 
 with tab5:
     st.header("Validation")
