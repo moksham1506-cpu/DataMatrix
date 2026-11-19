@@ -1,0 +1,3285 @@
+{
+  "dataset_name": "DataFix Demo Relational Benchmark",
+  "seed": 42,
+  "total_injections": 327,
+  "injections_by_type": {
+    "missing_value": 75,
+    "invalid_format": 70,
+    "relationship_violation": 70,
+    "inconsistent_category": 55,
+    "duplicate_row": 30,
+    "outlier": 27
+  },
+  "injections": [
+    {
+      "injection_id": "INJ_0001",
+      "table": "customers",
+      "row_id": 3474,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "barbara.martin155@yahoo.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0002",
+      "table": "customers",
+      "row_id": 1852,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "charles.taylor576@company.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0003",
+      "table": "customers",
+      "row_id": 1004,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "jennifer.lopez509@gmail.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0004",
+      "table": "customers",
+      "row_id": 3907,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "joshua.thomas80@techcorp.io",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0005",
+      "table": "customers",
+      "row_id": 912,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "jessica.taylor553@outlook.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0006",
+      "table": "customers",
+      "row_id": 3923,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "thomas.martinez74@yahoo.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0007",
+      "table": "customers",
+      "row_id": 3258,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "daniel.gonzalez664@company.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0008",
+      "table": "customers",
+      "row_id": 4276,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "john.jones670@techcorp.io",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0009",
+      "table": "customers",
+      "row_id": 3797,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "john.brown585@company.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0010",
+      "table": "customers",
+      "row_id": 639,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "donna.thompson181@outlook.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0011",
+      "table": "customers",
+      "row_id": 428,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "mary.smith646@techcorp.io",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0012",
+      "table": "customers",
+      "row_id": 2185,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "barbara.martin38@outlook.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0013",
+      "table": "customers",
+      "row_id": 2625,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "lisa.wilson342@gmail.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0014",
+      "table": "customers",
+      "row_id": 3669,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "william.lee244@techcorp.io",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0015",
+      "table": "customers",
+      "row_id": 444,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "christopher.miller282@techcorp.io",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0016",
+      "table": "customers",
+      "row_id": 3580,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "emily.jones455@outlook.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0017",
+      "table": "customers",
+      "row_id": 2249,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "thomas.taylor971@company.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0018",
+      "table": "customers",
+      "row_id": 3851,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "mary.martinez192@gmail.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0019",
+      "table": "customers",
+      "row_id": 2156,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "sarah.moore377@techcorp.io",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0020",
+      "table": "customers",
+      "row_id": 2499,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "donna.jones470@gmail.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0021",
+      "table": "customers",
+      "row_id": 4632,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "david.garcia688@yahoo.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0022",
+      "table": "customers",
+      "row_id": 4865,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "lisa.jackson937@outlook.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0023",
+      "table": "customers",
+      "row_id": 4193,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "mary.hernandez635@yahoo.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0024",
+      "table": "customers",
+      "row_id": 469,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "donna.miller671@gmail.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0025",
+      "table": "customers",
+      "row_id": 2562,
+      "column": "email",
+      "issue_type": "missing_value",
+      "clean_value": "anthony.lopez124@gmail.com",
+      "corrupted_value": "nan",
+      "details": "Standard NaN null"
+    },
+    {
+      "injection_id": "INJ_0026",
+      "table": "customers",
+      "row_id": 649,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-519-485-6471",
+      "corrupted_value": "N/A",
+      "details": "Disguised null 'N/A'"
+    },
+    {
+      "injection_id": "INJ_0027",
+      "table": "customers",
+      "row_id": 4595,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-485-703-2856",
+      "corrupted_value": "null",
+      "details": "Disguised null 'null'"
+    },
+    {
+      "injection_id": "INJ_0028",
+      "table": "customers",
+      "row_id": 946,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-503-946-9886",
+      "corrupted_value": "-",
+      "details": "Disguised null '-'"
+    },
+    {
+      "injection_id": "INJ_0029",
+      "table": "customers",
+      "row_id": 379,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-459-339-9408",
+      "corrupted_value": "?",
+      "details": "Disguised null '?'"
+    },
+    {
+      "injection_id": "INJ_0030",
+      "table": "customers",
+      "row_id": 1134,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-706-802-8050",
+      "corrupted_value": "None",
+      "details": "Disguised null 'None'"
+    },
+    {
+      "injection_id": "INJ_0031",
+      "table": "customers",
+      "row_id": 3868,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-404-485-5902",
+      "corrupted_value": "unknown",
+      "details": "Disguised null 'unknown'"
+    },
+    {
+      "injection_id": "INJ_0032",
+      "table": "customers",
+      "row_id": 2474,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-869-639-4189",
+      "corrupted_value": "missing",
+      "details": "Disguised null 'missing'"
+    },
+    {
+      "injection_id": "INJ_0033",
+      "table": "customers",
+      "row_id": 3700,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-833-728-7052",
+      "corrupted_value": "N/A",
+      "details": "Disguised null 'N/A'"
+    },
+    {
+      "injection_id": "INJ_0034",
+      "table": "customers",
+      "row_id": 3399,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-862-134-2976",
+      "corrupted_value": "null",
+      "details": "Disguised null 'null'"
+    },
+    {
+      "injection_id": "INJ_0035",
+      "table": "customers",
+      "row_id": 3776,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-324-263-4746",
+      "corrupted_value": "-",
+      "details": "Disguised null '-'"
+    },
+    {
+      "injection_id": "INJ_0036",
+      "table": "customers",
+      "row_id": 2720,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-656-549-3323",
+      "corrupted_value": "?",
+      "details": "Disguised null '?'"
+    },
+    {
+      "injection_id": "INJ_0037",
+      "table": "customers",
+      "row_id": 1844,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-288-196-6696",
+      "corrupted_value": "None",
+      "details": "Disguised null 'None'"
+    },
+    {
+      "injection_id": "INJ_0038",
+      "table": "customers",
+      "row_id": 1806,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-393-328-2724",
+      "corrupted_value": "unknown",
+      "details": "Disguised null 'unknown'"
+    },
+    {
+      "injection_id": "INJ_0039",
+      "table": "customers",
+      "row_id": 2375,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-834-547-4387",
+      "corrupted_value": "missing",
+      "details": "Disguised null 'missing'"
+    },
+    {
+      "injection_id": "INJ_0040",
+      "table": "customers",
+      "row_id": 1824,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-728-382-2307",
+      "corrupted_value": "N/A",
+      "details": "Disguised null 'N/A'"
+    },
+    {
+      "injection_id": "INJ_0041",
+      "table": "customers",
+      "row_id": 3426,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-511-470-6618",
+      "corrupted_value": "null",
+      "details": "Disguised null 'null'"
+    },
+    {
+      "injection_id": "INJ_0042",
+      "table": "customers",
+      "row_id": 4517,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-915-315-7075",
+      "corrupted_value": "-",
+      "details": "Disguised null '-'"
+    },
+    {
+      "injection_id": "INJ_0043",
+      "table": "customers",
+      "row_id": 4822,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-731-769-7771",
+      "corrupted_value": "?",
+      "details": "Disguised null '?'"
+    },
+    {
+      "injection_id": "INJ_0044",
+      "table": "customers",
+      "row_id": 768,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-473-307-7662",
+      "corrupted_value": "None",
+      "details": "Disguised null 'None'"
+    },
+    {
+      "injection_id": "INJ_0045",
+      "table": "customers",
+      "row_id": 2821,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-374-450-8160",
+      "corrupted_value": "unknown",
+      "details": "Disguised null 'unknown'"
+    },
+    {
+      "injection_id": "INJ_0046",
+      "table": "customers",
+      "row_id": 2310,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-357-169-8681",
+      "corrupted_value": "missing",
+      "details": "Disguised null 'missing'"
+    },
+    {
+      "injection_id": "INJ_0047",
+      "table": "customers",
+      "row_id": 216,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-479-296-5694",
+      "corrupted_value": "N/A",
+      "details": "Disguised null 'N/A'"
+    },
+    {
+      "injection_id": "INJ_0048",
+      "table": "customers",
+      "row_id": 968,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-823-430-3950",
+      "corrupted_value": "null",
+      "details": "Disguised null 'null'"
+    },
+    {
+      "injection_id": "INJ_0049",
+      "table": "customers",
+      "row_id": 1622,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-299-975-9734",
+      "corrupted_value": "-",
+      "details": "Disguised null '-'"
+    },
+    {
+      "injection_id": "INJ_0050",
+      "table": "customers",
+      "row_id": 2045,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-861-225-1528",
+      "corrupted_value": "?",
+      "details": "Disguised null '?'"
+    },
+    {
+      "injection_id": "INJ_0051",
+      "table": "customers",
+      "row_id": 3973,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-299-212-7775",
+      "corrupted_value": "None",
+      "details": "Disguised null 'None'"
+    },
+    {
+      "injection_id": "INJ_0052",
+      "table": "customers",
+      "row_id": 2320,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-513-414-5934",
+      "corrupted_value": "unknown",
+      "details": "Disguised null 'unknown'"
+    },
+    {
+      "injection_id": "INJ_0053",
+      "table": "customers",
+      "row_id": 3709,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-934-561-6084",
+      "corrupted_value": "missing",
+      "details": "Disguised null 'missing'"
+    },
+    {
+      "injection_id": "INJ_0054",
+      "table": "customers",
+      "row_id": 1648,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-764-294-8069",
+      "corrupted_value": "N/A",
+      "details": "Disguised null 'N/A'"
+    },
+    {
+      "injection_id": "INJ_0055",
+      "table": "customers",
+      "row_id": 2341,
+      "column": "phone",
+      "issue_type": "missing_value",
+      "clean_value": "+1-494-420-7754",
+      "corrupted_value": "null",
+      "details": "Disguised null 'null'"
+    },
+    {
+      "injection_id": "INJ_0056",
+      "table": "orders",
+      "row_id": 2288,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2023-11-22",
+      "corrupted_value": "N/A",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0057",
+      "table": "orders",
+      "row_id": 2825,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2023-07-23",
+      "corrupted_value": "nan",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0058",
+      "table": "orders",
+      "row_id": 2769,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2023-11-03",
+      "corrupted_value": "nan",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0059",
+      "table": "orders",
+      "row_id": 3268,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2022-06-12",
+      "corrupted_value": "N/A",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0060",
+      "table": "orders",
+      "row_id": 1380,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2023-05-21",
+      "corrupted_value": "N/A",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0061",
+      "table": "orders",
+      "row_id": 2521,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2022-10-18",
+      "corrupted_value": "nan",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0062",
+      "table": "orders",
+      "row_id": 2353,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2023-01-26",
+      "corrupted_value": "nan",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0063",
+      "table": "orders",
+      "row_id": 3338,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2022-01-15",
+      "corrupted_value": "N/A",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0064",
+      "table": "orders",
+      "row_id": 4272,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2022-04-26",
+      "corrupted_value": "N/A",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0065",
+      "table": "orders",
+      "row_id": 395,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2023-03-10",
+      "corrupted_value": "nan",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0066",
+      "table": "orders",
+      "row_id": 2348,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2022-04-20",
+      "corrupted_value": "N/A",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0067",
+      "table": "orders",
+      "row_id": 2836,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2023-07-14",
+      "corrupted_value": "N/A",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0068",
+      "table": "orders",
+      "row_id": 3891,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2023-02-16",
+      "corrupted_value": "nan",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0069",
+      "table": "orders",
+      "row_id": 3824,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2022-06-10",
+      "corrupted_value": "N/A",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0070",
+      "table": "orders",
+      "row_id": 185,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2023-08-18",
+      "corrupted_value": "nan",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0071",
+      "table": "orders",
+      "row_id": 3513,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2022-03-03",
+      "corrupted_value": "nan",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0072",
+      "table": "orders",
+      "row_id": 697,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2022-06-08",
+      "corrupted_value": "nan",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0073",
+      "table": "orders",
+      "row_id": 1225,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2022-06-17",
+      "corrupted_value": "nan",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0074",
+      "table": "orders",
+      "row_id": 2194,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2023-11-08",
+      "corrupted_value": "N/A",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0075",
+      "table": "orders",
+      "row_id": 571,
+      "column": "delivery_date",
+      "issue_type": "missing_value",
+      "clean_value": "2022-03-16",
+      "corrupted_value": "nan",
+      "details": "Missing delivery date"
+    },
+    {
+      "injection_id": "INJ_0076",
+      "table": "customers",
+      "row_id": 5000,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 1261",
+      "corrupted_value": "Row 5000",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0077",
+      "table": "customers",
+      "row_id": 5001,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 1958",
+      "corrupted_value": "Row 5001",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0078",
+      "table": "customers",
+      "row_id": 5002,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 700",
+      "corrupted_value": "Row 5002",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0079",
+      "table": "customers",
+      "row_id": 5003,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 145",
+      "corrupted_value": "Row 5003",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0080",
+      "table": "customers",
+      "row_id": 5004,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 1650",
+      "corrupted_value": "Row 5004",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0081",
+      "table": "customers",
+      "row_id": 5005,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 1660",
+      "corrupted_value": "Row 5005",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0082",
+      "table": "customers",
+      "row_id": 5006,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 1082",
+      "corrupted_value": "Row 5006",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0083",
+      "table": "customers",
+      "row_id": 5007,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 581",
+      "corrupted_value": "Row 5007",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0084",
+      "table": "customers",
+      "row_id": 5008,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 1390",
+      "corrupted_value": "Row 5008",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0085",
+      "table": "customers",
+      "row_id": 5009,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 2043",
+      "corrupted_value": "Row 5009",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0086",
+      "table": "customers",
+      "row_id": 5010,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 2129",
+      "corrupted_value": "Row 5010",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0087",
+      "table": "customers",
+      "row_id": 5011,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 315",
+      "corrupted_value": "Row 5011",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0088",
+      "table": "customers",
+      "row_id": 5012,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 2489",
+      "corrupted_value": "Row 5012",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0089",
+      "table": "customers",
+      "row_id": 5013,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 2285",
+      "corrupted_value": "Row 5013",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0090",
+      "table": "customers",
+      "row_id": 5014,
+      "column": "ALL",
+      "issue_type": "duplicate_row",
+      "clean_value": "Row 731",
+      "corrupted_value": "Row 5014",
+      "details": "Exact duplicate row"
+    },
+    {
+      "injection_id": "INJ_0091",
+      "table": "customers",
+      "row_id": 5015,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Jessica Rodriguez",
+      "corrupted_value": "Jessica Rodriguezz",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0092",
+      "table": "customers",
+      "row_id": 5016,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Charles Martin",
+      "corrupted_value": "Charles Martinn",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0093",
+      "table": "customers",
+      "row_id": 5017,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Donna Jones",
+      "corrupted_value": "Donna Joness",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0094",
+      "table": "customers",
+      "row_id": 5018,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Susan Miller",
+      "corrupted_value": "Susan Millerr",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0095",
+      "table": "customers",
+      "row_id": 5019,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Betty Martinez",
+      "corrupted_value": "Betty Martinezz",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0096",
+      "table": "customers",
+      "row_id": 5020,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Elizabeth Jackson",
+      "corrupted_value": "Elizabeth Jacksonn",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0097",
+      "table": "customers",
+      "row_id": 5021,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Susan Williams",
+      "corrupted_value": "Susan Williamss",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0098",
+      "table": "customers",
+      "row_id": 5022,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "David Hernandez",
+      "corrupted_value": "David Hernandezz",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0099",
+      "table": "customers",
+      "row_id": 5023,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Nancy Hernandez",
+      "corrupted_value": "Nancy Hernandezz",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0100",
+      "table": "customers",
+      "row_id": 5024,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Matthew Jackson",
+      "corrupted_value": "Matthew Jacksonn",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0101",
+      "table": "customers",
+      "row_id": 5025,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Patricia Anderson",
+      "corrupted_value": "Patricia Andersonn",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0102",
+      "table": "customers",
+      "row_id": 5026,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Mary Brown",
+      "corrupted_value": "Mary Brownn",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0103",
+      "table": "customers",
+      "row_id": 5027,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Michael Perez",
+      "corrupted_value": "Michael Perezz",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0104",
+      "table": "customers",
+      "row_id": 5028,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Paul Garcia",
+      "corrupted_value": "Paul Garciaa",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0105",
+      "table": "customers",
+      "row_id": 5029,
+      "column": "name",
+      "issue_type": "duplicate_row",
+      "clean_value": "Lisa Rodriguez",
+      "corrupted_value": "Lisa Rodriguezz",
+      "details": "Fuzzy duplicate name variant"
+    },
+    {
+      "injection_id": "INJ_0106",
+      "table": "customers",
+      "row_id": 883,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2021-11-16",
+      "corrupted_value": "16/11/2021",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0107",
+      "table": "customers",
+      "row_id": 3604,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2020-01-31",
+      "corrupted_value": "Jan 31, 2020",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0108",
+      "table": "customers",
+      "row_id": 3878,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2021-10-31",
+      "corrupted_value": "2021.10.31",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0109",
+      "table": "customers",
+      "row_id": 1010,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2021-03-25",
+      "corrupted_value": "2022-02-31",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0110",
+      "table": "customers",
+      "row_id": 2230,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2021-02-18",
+      "corrupted_value": "18/02/2021",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0111",
+      "table": "customers",
+      "row_id": 3673,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2021-03-12",
+      "corrupted_value": "Mar 12, 2021",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0112",
+      "table": "customers",
+      "row_id": 4040,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2021-08-09",
+      "corrupted_value": "2021.08.09",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0113",
+      "table": "customers",
+      "row_id": 1312,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2023-10-03",
+      "corrupted_value": "2022-02-31",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0114",
+      "table": "customers",
+      "row_id": 636,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2023-05-31",
+      "corrupted_value": "31/05/2023",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0115",
+      "table": "customers",
+      "row_id": 2894,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2022-02-02",
+      "corrupted_value": "Feb 02, 2022",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0116",
+      "table": "customers",
+      "row_id": 3571,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2021-08-11",
+      "corrupted_value": "2021.08.11",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0117",
+      "table": "customers",
+      "row_id": 3515,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2021-08-12",
+      "corrupted_value": "2022-02-31",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0118",
+      "table": "customers",
+      "row_id": 3803,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2021-10-10",
+      "corrupted_value": "10/10/2021",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0119",
+      "table": "customers",
+      "row_id": 2239,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2022-04-07",
+      "corrupted_value": "Apr 07, 2022",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0120",
+      "table": "customers",
+      "row_id": 4824,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2021-11-12",
+      "corrupted_value": "2021.11.12",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0121",
+      "table": "customers",
+      "row_id": 2733,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2021-02-22",
+      "corrupted_value": "2022-02-31",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0122",
+      "table": "customers",
+      "row_id": 1300,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2020-08-09",
+      "corrupted_value": "09/08/2020",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0123",
+      "table": "customers",
+      "row_id": 3931,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2020-11-16",
+      "corrupted_value": "Nov 16, 2020",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0124",
+      "table": "customers",
+      "row_id": 480,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2022-11-09",
+      "corrupted_value": "2022.11.09",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0125",
+      "table": "customers",
+      "row_id": 4503,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2022-05-14",
+      "corrupted_value": "2022-02-31",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0126",
+      "table": "customers",
+      "row_id": 1357,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2022-06-04",
+      "corrupted_value": "04/06/2022",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0127",
+      "table": "customers",
+      "row_id": 2275,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2023-08-09",
+      "corrupted_value": "Aug 09, 2023",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0128",
+      "table": "customers",
+      "row_id": 1322,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2020-04-08",
+      "corrupted_value": "2020.04.08",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0129",
+      "table": "customers",
+      "row_id": 1528,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2022-03-27",
+      "corrupted_value": "2022-02-31",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0130",
+      "table": "customers",
+      "row_id": 395,
+      "column": "signup_date",
+      "issue_type": "invalid_format",
+      "clean_value": "2022-12-31",
+      "corrupted_value": "31/12/2022",
+      "details": "Inconsistent date format"
+    },
+    {
+      "injection_id": "INJ_0131",
+      "table": "customers",
+      "row_id": 2229,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "michelle.anderson781@techcorp.io",
+      "corrupted_value": "michelle.anderson781techcorp.io",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0132",
+      "table": "customers",
+      "row_id": 850,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "michelle.jones680@techcorp.io",
+      "corrupted_value": "michelle.jones680@techcorp.io..com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0133",
+      "table": "customers",
+      "row_id": 3287,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "william.martinez389@techcorp.io",
+      "corrupted_value": "william martinez389@techcorp io",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0134",
+      "table": "customers",
+      "row_id": 4939,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "susan.anderson379@company.com",
+      "corrupted_value": "susan.anderson379company.com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0135",
+      "table": "customers",
+      "row_id": 3374,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "anthony.perez255@company.com",
+      "corrupted_value": "anthony.perez255@company.com..com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0136",
+      "table": "customers",
+      "row_id": 1471,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "margaret.brown63@company.com",
+      "corrupted_value": "margaret brown63@company com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0137",
+      "table": "customers",
+      "row_id": 757,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "jessica.gonzalez748@outlook.com",
+      "corrupted_value": "jessica.gonzalez748outlook.com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0138",
+      "table": "customers",
+      "row_id": 3056,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "steven.anderson34@outlook.com",
+      "corrupted_value": "steven.anderson34@outlook.com..com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0139",
+      "table": "customers",
+      "row_id": 2899,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "william.davis861@yahoo.com",
+      "corrupted_value": "william davis861@yahoo com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0140",
+      "table": "customers",
+      "row_id": 872,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "robert.moore576@gmail.com",
+      "corrupted_value": "robert.moore576gmail.com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0141",
+      "table": "customers",
+      "row_id": 2928,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "linda.thompson219@gmail.com",
+      "corrupted_value": "linda.thompson219@gmail.com..com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0142",
+      "table": "customers",
+      "row_id": 113,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "charles.smith340@techcorp.io",
+      "corrupted_value": "charles smith340@techcorp io",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0143",
+      "table": "customers",
+      "row_id": 3958,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "patricia.hernandez566@gmail.com",
+      "corrupted_value": "patricia.hernandez566gmail.com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0144",
+      "table": "customers",
+      "row_id": 515,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "robert.taylor204@techcorp.io",
+      "corrupted_value": "robert.taylor204@techcorp.io..com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0145",
+      "table": "customers",
+      "row_id": 2950,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "mary.thomas968@company.com",
+      "corrupted_value": "mary thomas968@company com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0146",
+      "table": "customers",
+      "row_id": 720,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "jennifer.white734@company.com",
+      "corrupted_value": "jennifer.white734company.com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0147",
+      "table": "customers",
+      "row_id": 1729,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "robert.davis73@outlook.com",
+      "corrupted_value": "robert.davis73@outlook.com..com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0148",
+      "table": "customers",
+      "row_id": 4792,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "joshua.johnson290@gmail.com",
+      "corrupted_value": "joshua johnson290@gmail com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0149",
+      "table": "customers",
+      "row_id": 4616,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "barbara.hernandez141@gmail.com",
+      "corrupted_value": "barbara.hernandez141gmail.com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0150",
+      "table": "customers",
+      "row_id": 1495,
+      "column": "email",
+      "issue_type": "invalid_format",
+      "clean_value": "sarah.martin90@gmail.com",
+      "corrupted_value": "sarah.martin90@gmail.com..com",
+      "details": "Malformed email address"
+    },
+    {
+      "injection_id": "INJ_0151",
+      "table": "orders",
+      "row_id": 2764,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "1847.12",
+      "corrupted_value": "$1,847.12",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0152",
+      "table": "orders",
+      "row_id": 1575,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "718.8",
+      "corrupted_value": "USD 718.8",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0153",
+      "table": "orders",
+      "row_id": 49,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "938.94",
+      "corrupted_value": "$938.94",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0154",
+      "table": "orders",
+      "row_id": 4468,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "1247.4",
+      "corrupted_value": "USD 1247.4",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0155",
+      "table": "orders",
+      "row_id": 1417,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "844.38",
+      "corrupted_value": "$844.38",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0156",
+      "table": "orders",
+      "row_id": 2712,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "1117.5",
+      "corrupted_value": "USD 1117.5",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0157",
+      "table": "orders",
+      "row_id": 1405,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "16.61",
+      "corrupted_value": "$16.61",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0158",
+      "table": "orders",
+      "row_id": 107,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "3856.86",
+      "corrupted_value": "USD 3856.86",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0159",
+      "table": "orders",
+      "row_id": 2707,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "830.26",
+      "corrupted_value": "$830.26",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0160",
+      "table": "orders",
+      "row_id": 4118,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "1671.52",
+      "corrupted_value": "USD 1671.52",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0161",
+      "table": "orders",
+      "row_id": 4231,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "670.18",
+      "corrupted_value": "$670.18",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0162",
+      "table": "orders",
+      "row_id": 542,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "2348.71",
+      "corrupted_value": "USD 2348.71",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0163",
+      "table": "orders",
+      "row_id": 1507,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "84.63",
+      "corrupted_value": "$84.63",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0164",
+      "table": "orders",
+      "row_id": 3295,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "2951.62",
+      "corrupted_value": "USD 2951.62",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0165",
+      "table": "orders",
+      "row_id": 1218,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "479.12",
+      "corrupted_value": "$479.12",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0166",
+      "table": "orders",
+      "row_id": 1649,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "1466.72",
+      "corrupted_value": "USD 1466.72",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0167",
+      "table": "orders",
+      "row_id": 3325,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "1213.83",
+      "corrupted_value": "$1,213.83",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0168",
+      "table": "orders",
+      "row_id": 2185,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "482.61",
+      "corrupted_value": "USD 482.61",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0169",
+      "table": "orders",
+      "row_id": 593,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "3669.39",
+      "corrupted_value": "$3,669.39",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0170",
+      "table": "orders",
+      "row_id": 3634,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "1258.4",
+      "corrupted_value": "USD 1258.4",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0171",
+      "table": "orders",
+      "row_id": 699,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "2191.02",
+      "corrupted_value": "$2,191.02",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0172",
+      "table": "orders",
+      "row_id": 2591,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "320.04",
+      "corrupted_value": "USD 320.04",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0173",
+      "table": "orders",
+      "row_id": 1812,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "1038.3",
+      "corrupted_value": "$1,038.30",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0174",
+      "table": "orders",
+      "row_id": 3357,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "2153.69",
+      "corrupted_value": "USD 2153.69",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0175",
+      "table": "orders",
+      "row_id": 3650,
+      "column": "total_amount",
+      "issue_type": "invalid_format",
+      "clean_value": "1736.4",
+      "corrupted_value": "$1,736.40",
+      "details": "Numeric with currency symbol/string"
+    },
+    {
+      "injection_id": "INJ_0176",
+      "table": "customers",
+      "row_id": 1652,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "USA",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0177",
+      "table": "customers",
+      "row_id": 4663,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "U.S.A.",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0178",
+      "table": "customers",
+      "row_id": 3766,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "us",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0179",
+      "table": "customers",
+      "row_id": 2115,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "  United States  ",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0180",
+      "table": "customers",
+      "row_id": 4463,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "usa",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0181",
+      "table": "customers",
+      "row_id": 2664,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "USA",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0182",
+      "table": "customers",
+      "row_id": 4464,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "U.S.A.",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0183",
+      "table": "customers",
+      "row_id": 229,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "us",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0184",
+      "table": "customers",
+      "row_id": 1573,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "  United States  ",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0185",
+      "table": "customers",
+      "row_id": 4946,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "usa",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0186",
+      "table": "customers",
+      "row_id": 5019,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "USA",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0187",
+      "table": "customers",
+      "row_id": 4226,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "U.S.A.",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0188",
+      "table": "customers",
+      "row_id": 4923,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "us",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0189",
+      "table": "customers",
+      "row_id": 2418,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "  United States  ",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0190",
+      "table": "customers",
+      "row_id": 4515,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "usa",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0191",
+      "table": "customers",
+      "row_id": 3882,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "USA",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0192",
+      "table": "customers",
+      "row_id": 797,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "U.S.A.",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0193",
+      "table": "customers",
+      "row_id": 492,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "us",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0194",
+      "table": "customers",
+      "row_id": 2220,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "  United States  ",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0195",
+      "table": "customers",
+      "row_id": 865,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "usa",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0196",
+      "table": "customers",
+      "row_id": 590,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "USA",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0197",
+      "table": "customers",
+      "row_id": 467,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "U.S.A.",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0198",
+      "table": "customers",
+      "row_id": 3731,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "us",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0199",
+      "table": "customers",
+      "row_id": 4484,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "  United States  ",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0200",
+      "table": "customers",
+      "row_id": 1174,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "usa",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0201",
+      "table": "customers",
+      "row_id": 2624,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "USA",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0202",
+      "table": "customers",
+      "row_id": 1321,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "U.S.A.",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0203",
+      "table": "customers",
+      "row_id": 1951,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "us",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0204",
+      "table": "customers",
+      "row_id": 936,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "  United States  ",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0205",
+      "table": "customers",
+      "row_id": 1753,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "usa",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0206",
+      "table": "customers",
+      "row_id": 3359,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "USA",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0207",
+      "table": "customers",
+      "row_id": 3126,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "U.S.A.",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0208",
+      "table": "customers",
+      "row_id": 2719,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "us",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0209",
+      "table": "customers",
+      "row_id": 4833,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "  United States  ",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0210",
+      "table": "customers",
+      "row_id": 99,
+      "column": "country",
+      "issue_type": "inconsistent_category",
+      "clean_value": "United States",
+      "corrupted_value": "usa",
+      "details": "Country category variant"
+    },
+    {
+      "injection_id": "INJ_0211",
+      "table": "customers",
+      "row_id": 125,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "standard",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0212",
+      "table": "customers",
+      "row_id": 1143,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "  STANDARD  ",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0213",
+      "table": "customers",
+      "row_id": 3824,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Gold",
+      "corrupted_value": "gold",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0214",
+      "table": "customers",
+      "row_id": 4832,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "  STANDARD  ",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0215",
+      "table": "customers",
+      "row_id": 421,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Silver",
+      "corrupted_value": "silver",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0216",
+      "table": "customers",
+      "row_id": 607,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Platinum",
+      "corrupted_value": "  PLATINUM  ",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0217",
+      "table": "customers",
+      "row_id": 4018,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "standard",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0218",
+      "table": "customers",
+      "row_id": 4628,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "  STANDARD  ",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0219",
+      "table": "customers",
+      "row_id": 2082,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "standard",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0220",
+      "table": "customers",
+      "row_id": 89,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "  STANDARD  ",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0221",
+      "table": "customers",
+      "row_id": 3465,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "standard",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0222",
+      "table": "customers",
+      "row_id": 3378,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "  STANDARD  ",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0223",
+      "table": "customers",
+      "row_id": 3576,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "standard",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0224",
+      "table": "customers",
+      "row_id": 2901,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "  STANDARD  ",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0225",
+      "table": "customers",
+      "row_id": 2526,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "standard",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0226",
+      "table": "customers",
+      "row_id": 1391,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Silver",
+      "corrupted_value": "  SILVER  ",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0227",
+      "table": "customers",
+      "row_id": 1479,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Gold",
+      "corrupted_value": "gold",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0228",
+      "table": "customers",
+      "row_id": 656,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "  STANDARD  ",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0229",
+      "table": "customers",
+      "row_id": 4318,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Silver",
+      "corrupted_value": "silver",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0230",
+      "table": "customers",
+      "row_id": 997,
+      "column": "segment",
+      "issue_type": "inconsistent_category",
+      "clean_value": "Standard",
+      "corrupted_value": "  STANDARD  ",
+      "details": "Segment casing/whitespace variant"
+    },
+    {
+      "injection_id": "INJ_0231",
+      "table": "customers",
+      "row_id": 701,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "44",
+      "corrupted_value": "188",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0232",
+      "table": "customers",
+      "row_id": 4612,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "53",
+      "corrupted_value": "-53",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0233",
+      "table": "customers",
+      "row_id": 4787,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "44",
+      "corrupted_value": "203",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0234",
+      "table": "customers",
+      "row_id": 2978,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "68",
+      "corrupted_value": "-68",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0235",
+      "table": "customers",
+      "row_id": 2770,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "71",
+      "corrupted_value": "246",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0236",
+      "table": "customers",
+      "row_id": 739,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "61",
+      "corrupted_value": "-61",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0237",
+      "table": "customers",
+      "row_id": 4198,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "29",
+      "corrupted_value": "200",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0238",
+      "table": "customers",
+      "row_id": 124,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "23",
+      "corrupted_value": "-23",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0239",
+      "table": "customers",
+      "row_id": 528,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "51",
+      "corrupted_value": "243",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0240",
+      "table": "customers",
+      "row_id": 3742,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "46",
+      "corrupted_value": "-46",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0241",
+      "table": "customers",
+      "row_id": 3613,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "29",
+      "corrupted_value": "217",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0242",
+      "table": "customers",
+      "row_id": 2095,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "64",
+      "corrupted_value": "-64",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0243",
+      "table": "customers",
+      "row_id": 3165,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "59",
+      "corrupted_value": "198",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0244",
+      "table": "customers",
+      "row_id": 2489,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "43",
+      "corrupted_value": "-43",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0245",
+      "table": "customers",
+      "row_id": 32,
+      "column": "age",
+      "issue_type": "outlier",
+      "clean_value": "54",
+      "corrupted_value": "206",
+      "details": "Impossible age value outlier"
+    },
+    {
+      "injection_id": "INJ_0246",
+      "table": "orders",
+      "row_id": 1448,
+      "column": "unit_price",
+      "issue_type": "outlier",
+      "clean_value": "351.1",
+      "corrupted_value": "49999.0",
+      "details": "Extreme order unit price outlier"
+    },
+    {
+      "injection_id": "INJ_0247",
+      "table": "orders",
+      "row_id": 4332,
+      "column": "unit_price",
+      "issue_type": "outlier",
+      "clean_value": "466.31",
+      "corrupted_value": "-250.0",
+      "details": "Extreme order unit price outlier"
+    },
+    {
+      "injection_id": "INJ_0248",
+      "table": "orders",
+      "row_id": 4658,
+      "column": "unit_price",
+      "issue_type": "outlier",
+      "clean_value": "117.18",
+      "corrupted_value": "49999.0",
+      "details": "Extreme order unit price outlier"
+    },
+    {
+      "injection_id": "INJ_0249",
+      "table": "orders",
+      "row_id": 2648,
+      "column": "unit_price",
+      "issue_type": "outlier",
+      "clean_value": "368.68",
+      "corrupted_value": "-250.0",
+      "details": "Extreme order unit price outlier"
+    },
+    {
+      "injection_id": "INJ_0250",
+      "table": "orders",
+      "row_id": 4632,
+      "column": "unit_price",
+      "issue_type": "outlier",
+      "clean_value": "366.31",
+      "corrupted_value": "49999.0",
+      "details": "Extreme order unit price outlier"
+    },
+    {
+      "injection_id": "INJ_0251",
+      "table": "orders",
+      "row_id": 3024,
+      "column": "unit_price",
+      "issue_type": "outlier",
+      "clean_value": "44.93",
+      "corrupted_value": "-250.0",
+      "details": "Extreme order unit price outlier"
+    },
+    {
+      "injection_id": "INJ_0252",
+      "table": "orders",
+      "row_id": 1870,
+      "column": "unit_price",
+      "issue_type": "outlier",
+      "clean_value": "206.47",
+      "corrupted_value": "49999.0",
+      "details": "Extreme order unit price outlier"
+    },
+    {
+      "injection_id": "INJ_0253",
+      "table": "orders",
+      "row_id": 594,
+      "column": "unit_price",
+      "issue_type": "outlier",
+      "clean_value": "108.26",
+      "corrupted_value": "-250.0",
+      "details": "Extreme order unit price outlier"
+    },
+    {
+      "injection_id": "INJ_0254",
+      "table": "orders",
+      "row_id": 2061,
+      "column": "unit_price",
+      "issue_type": "outlier",
+      "clean_value": "170.8",
+      "corrupted_value": "49999.0",
+      "details": "Extreme order unit price outlier"
+    },
+    {
+      "injection_id": "INJ_0255",
+      "table": "orders",
+      "row_id": 3012,
+      "column": "unit_price",
+      "issue_type": "outlier",
+      "clean_value": "381.8",
+      "corrupted_value": "-250.0",
+      "details": "Extreme order unit price outlier"
+    },
+    {
+      "injection_id": "INJ_0256",
+      "table": "orders",
+      "row_id": 3818,
+      "column": "unit_price",
+      "issue_type": "outlier",
+      "clean_value": "255.19",
+      "corrupted_value": "49999.0",
+      "details": "Extreme order unit price outlier"
+    },
+    {
+      "injection_id": "INJ_0257",
+      "table": "orders",
+      "row_id": 3762,
+      "column": "unit_price",
+      "issue_type": "outlier",
+      "clean_value": "459.94",
+      "corrupted_value": "-250.0",
+      "details": "Extreme order unit price outlier"
+    },
+    {
+      "injection_id": "INJ_0258",
+      "table": "orders",
+      "row_id": 4600,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "2529",
+      "corrupted_value": "99000",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0259",
+      "table": "orders",
+      "row_id": 4570,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "1228",
+      "corrupted_value": "99001",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0260",
+      "table": "orders",
+      "row_id": 2963,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "2790",
+      "corrupted_value": "99002",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0261",
+      "table": "orders",
+      "row_id": 4776,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "1337",
+      "corrupted_value": "99003",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0262",
+      "table": "orders",
+      "row_id": 1423,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "4040",
+      "corrupted_value": "99004",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0263",
+      "table": "orders",
+      "row_id": 524,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "4263",
+      "corrupted_value": "99005",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0264",
+      "table": "orders",
+      "row_id": 4609,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "4979",
+      "corrupted_value": "99006",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0265",
+      "table": "orders",
+      "row_id": 827,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "5966",
+      "corrupted_value": "99007",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0266",
+      "table": "orders",
+      "row_id": 718,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "4648",
+      "corrupted_value": "99008",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0267",
+      "table": "orders",
+      "row_id": 2369,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "1091",
+      "corrupted_value": "99009",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0268",
+      "table": "orders",
+      "row_id": 959,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "1668",
+      "corrupted_value": "99010",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0269",
+      "table": "orders",
+      "row_id": 1548,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "5444",
+      "corrupted_value": "99011",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0270",
+      "table": "orders",
+      "row_id": 331,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "5035",
+      "corrupted_value": "99012",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0271",
+      "table": "orders",
+      "row_id": 4392,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "1822",
+      "corrupted_value": "99013",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0272",
+      "table": "orders",
+      "row_id": 2990,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "1392",
+      "corrupted_value": "99014",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0273",
+      "table": "orders",
+      "row_id": 4114,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "5685",
+      "corrupted_value": "99015",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0274",
+      "table": "orders",
+      "row_id": 778,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "1306",
+      "corrupted_value": "99016",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0275",
+      "table": "orders",
+      "row_id": 2887,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "3626",
+      "corrupted_value": "99017",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0276",
+      "table": "orders",
+      "row_id": 3712,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "5417",
+      "corrupted_value": "99018",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0277",
+      "table": "orders",
+      "row_id": 1590,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "2085",
+      "corrupted_value": "99019",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0278",
+      "table": "orders",
+      "row_id": 4949,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "3736",
+      "corrupted_value": "99020",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0279",
+      "table": "orders",
+      "row_id": 728,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "5380",
+      "corrupted_value": "99021",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0280",
+      "table": "orders",
+      "row_id": 4185,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "3982",
+      "corrupted_value": "99022",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0281",
+      "table": "orders",
+      "row_id": 1784,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "4371",
+      "corrupted_value": "99023",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0282",
+      "table": "orders",
+      "row_id": 4065,
+      "column": "customer_id",
+      "issue_type": "relationship_violation",
+      "clean_value": "1650",
+      "corrupted_value": "99024",
+      "details": "Orphan foreign key: customer does not exist"
+    },
+    {
+      "injection_id": "INJ_0283",
+      "table": "orders",
+      "row_id": 4628,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2022-10-06",
+      "corrupted_value": "2022-09-13",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0284",
+      "table": "orders",
+      "row_id": 4469,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2022-04-23",
+      "corrupted_value": "2022-04-04",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0285",
+      "table": "orders",
+      "row_id": 905,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2023-02-28",
+      "corrupted_value": "2023-02-14",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0286",
+      "table": "orders",
+      "row_id": 2457,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2023-01-25",
+      "corrupted_value": "2023-01-03",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0287",
+      "table": "orders",
+      "row_id": 246,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2022-11-27",
+      "corrupted_value": "2022-11-05",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0288",
+      "table": "orders",
+      "row_id": 4435,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2022-09-13",
+      "corrupted_value": "2022-08-24",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0289",
+      "table": "orders",
+      "row_id": 4737,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2022-12-28",
+      "corrupted_value": "2022-12-08",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0290",
+      "table": "orders",
+      "row_id": 2853,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2023-06-29",
+      "corrupted_value": "2023-06-16",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0291",
+      "table": "orders",
+      "row_id": 1137,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2022-04-02",
+      "corrupted_value": "2022-03-21",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0292",
+      "table": "orders",
+      "row_id": 1410,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2022-11-15",
+      "corrupted_value": "2022-10-25",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0293",
+      "table": "orders",
+      "row_id": 3207,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2023-04-29",
+      "corrupted_value": "2023-04-09",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0294",
+      "table": "orders",
+      "row_id": 1865,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2023-07-05",
+      "corrupted_value": "2023-06-21",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0295",
+      "table": "orders",
+      "row_id": 1244,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2022-05-28",
+      "corrupted_value": "2022-05-05",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0296",
+      "table": "orders",
+      "row_id": 2076,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2022-12-22",
+      "corrupted_value": "2022-11-29",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0297",
+      "table": "orders",
+      "row_id": 1179,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2023-03-19",
+      "corrupted_value": "2023-03-03",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0298",
+      "table": "orders",
+      "row_id": 4241,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2023-04-23",
+      "corrupted_value": "2023-04-11",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0299",
+      "table": "orders",
+      "row_id": 2618,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2022-06-27",
+      "corrupted_value": "2022-06-14",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0300",
+      "table": "orders",
+      "row_id": 35,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2023-09-02",
+      "corrupted_value": "2023-08-18",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0301",
+      "table": "orders",
+      "row_id": 2673,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2023-03-02",
+      "corrupted_value": "2023-02-17",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0302",
+      "table": "orders",
+      "row_id": 216,
+      "column": "delivery_date",
+      "issue_type": "relationship_violation",
+      "clean_value": "2022-02-23",
+      "corrupted_value": "2022-02-03",
+      "details": "Delivery date precedes order date"
+    },
+    {
+      "injection_id": "INJ_0303",
+      "table": "orders",
+      "row_id": 3198,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "940.56",
+      "corrupted_value": "1090.56",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0304",
+      "table": "orders",
+      "row_id": 3683,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "3461.36",
+      "corrupted_value": "3611.36",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0305",
+      "table": "orders",
+      "row_id": 3125,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "905.3",
+      "corrupted_value": "1055.3",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0306",
+      "table": "orders",
+      "row_id": 1330,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "3426.4",
+      "corrupted_value": "3576.4",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0307",
+      "table": "orders",
+      "row_id": 4279,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "1671.12",
+      "corrupted_value": "1821.12",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0308",
+      "table": "orders",
+      "row_id": 2563,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "2338.56",
+      "corrupted_value": "2488.56",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0309",
+      "table": "orders",
+      "row_id": 1924,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "411.12",
+      "corrupted_value": "561.12",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0310",
+      "table": "orders",
+      "row_id": 2389,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "3108.4",
+      "corrupted_value": "3258.4",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0311",
+      "table": "orders",
+      "row_id": 4160,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "618.96",
+      "corrupted_value": "768.96",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0312",
+      "table": "orders",
+      "row_id": 305,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "399.7",
+      "corrupted_value": "549.7",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0313",
+      "table": "orders",
+      "row_id": 3881,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "1074.48",
+      "corrupted_value": "1224.48",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0314",
+      "table": "orders",
+      "row_id": 3194,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "1919.1",
+      "corrupted_value": "2069.1",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0315",
+      "table": "orders",
+      "row_id": 1612,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "2444.55",
+      "corrupted_value": "2594.55",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0316",
+      "table": "orders",
+      "row_id": 3069,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "3177.18",
+      "corrupted_value": "3327.18",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0317",
+      "table": "orders",
+      "row_id": 3428,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "3927.42",
+      "corrupted_value": "4077.42",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0318",
+      "table": "orders",
+      "row_id": 1247,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "2398.2",
+      "corrupted_value": "2548.2",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0319",
+      "table": "orders",
+      "row_id": 2168,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "850.56",
+      "corrupted_value": "1000.56",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0320",
+      "table": "orders",
+      "row_id": 2310,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "920.24",
+      "corrupted_value": "1070.24",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0321",
+      "table": "orders",
+      "row_id": 4116,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "197.36",
+      "corrupted_value": "347.36",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0322",
+      "table": "orders",
+      "row_id": 826,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "451.08",
+      "corrupted_value": "601.0799999999999",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0323",
+      "table": "orders",
+      "row_id": 698,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "2099.7",
+      "corrupted_value": "2249.7",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0324",
+      "table": "orders",
+      "row_id": 2671,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "447.96",
+      "corrupted_value": "597.96",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0325",
+      "table": "orders",
+      "row_id": 670,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "1045.45",
+      "corrupted_value": "1195.45",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0326",
+      "table": "orders",
+      "row_id": 3915,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "406.93",
+      "corrupted_value": "556.9300000000001",
+      "details": "Total amount mismatch with quantity * unit_price"
+    },
+    {
+      "injection_id": "INJ_0327",
+      "table": "orders",
+      "row_id": 4822,
+      "column": "total_amount",
+      "issue_type": "relationship_violation",
+      "clean_value": "252.12",
+      "corrupted_value": "402.12",
+      "details": "Total amount mismatch with quantity * unit_price"
+    }
+  ]
+}
