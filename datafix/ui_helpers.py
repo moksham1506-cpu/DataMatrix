@@ -323,3 +323,102 @@ def generate_export_bundle(
         "quality_report_html": html_report,
         "validation": validation
     }
+
+
+def create_quality_gauge(score_before: float, score_after: float) -> Any:
+    """Create a dual-indicator Plotly gauge comparing quality scores before vs after repair."""
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+
+    fig = make_subplots(
+        rows=1, cols=2,
+        specs=[[{"type": "indicator"}, {"type": "indicator"}]],
+        subplot_titles=["Initial Quality Score", "Repaired Quality Score"]
+    )
+
+    sb = round(float(score_before), 1)
+    sa = round(float(score_after), 1)
+
+    fig.add_trace(go.Indicator(
+        mode="gauge+number",
+        value=sb,
+        gauge={
+            "axis": {"range": [0, 100]},
+            "bar": {"color": "#ef4444" if sb < 60 else "#f59e0b" if sb < 85 else "#10b981"},
+            "steps": [
+                {"range": [0, 60], "color": "#fee2e2"},
+                {"range": [60, 85], "color": "#fef3c7"},
+                {"range": [85, 100], "color": "#dcfce7"},
+            ],
+        }
+    ), row=1, col=1)
+
+    fig.add_trace(go.Indicator(
+        mode="gauge+number+delta",
+        value=sa,
+        delta={"reference": sb, "increasing": {"color": "#10b981"}},
+        gauge={
+            "axis": {"range": [0, 100]},
+            "bar": {"color": "#10b981"},
+            "steps": [
+                {"range": [0, 60], "color": "#fee2e2"},
+                {"range": [60, 85], "color": "#fef3c7"},
+                {"range": [85, 100], "color": "#dcfce7"},
+            ],
+        }
+    ), row=1, col=2)
+
+    fig.update_layout(height=260, margin=dict(l=20, r=20, t=40, b=20))
+    return fig
+
+
+def create_column_heatmap(issues_before: List[Issue], issues_after: List[Issue]) -> Any:
+    """Create a Plotly heatmap of defects per column by issue type before vs after repair."""
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+
+    cols_set = set()
+    types_set = set()
+    counts_before: Dict[Tuple[str, str], int] = {}
+    counts_after: Dict[Tuple[str, str], int] = {}
+
+    for iss in issues_before:
+        types_set.add(iss.issue_type)
+        for c in iss.columns:
+            cols_set.add(c)
+            counts_before[(c, iss.issue_type)] = counts_before.get((c, iss.issue_type), 0) + len(iss.row_ids)
+
+    for iss in issues_after:
+        types_set.add(iss.issue_type)
+        for c in iss.columns:
+            cols_set.add(c)
+            counts_after[(c, iss.issue_type)] = counts_after.get((c, iss.issue_type), 0) + len(iss.row_ids)
+
+    if not cols_set or not types_set:
+        fig = go.Figure()
+        fig.update_layout(title="No issues detected to display", height=240)
+        return fig
+
+    cols = sorted(list(cols_set))
+    types = sorted(list(types_set))
+
+    z_before = [[counts_before.get((c, t), 0) for c in cols] for t in types]
+    z_after = [[counts_after.get((c, t), 0) for c in cols] for t in types]
+
+    fig = make_subplots(
+        rows=1, cols=2,
+        subplot_titles=["Issues Before Repair", "Issues After Repair"],
+        shared_yaxes=True
+    )
+
+    fig.add_trace(
+        go.Heatmap(z=z_before, x=cols, y=types, colorscale="Reds", showscale=False),
+        row=1, col=1
+    )
+    fig.add_trace(
+        go.Heatmap(z=z_after, x=cols, y=types, colorscale="Greens", showscale=True),
+        row=1, col=2
+    )
+
+    fig.update_layout(height=300, margin=dict(l=20, r=20, t=40, b=20))
+    return fig

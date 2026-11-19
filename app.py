@@ -21,6 +21,8 @@ from datafix.ui_helpers import (
     paginate_entries,
     build_diff_dataframe,
     style_confidence_dataframe,
+    create_quality_gauge,
+    create_column_heatmap,
 )
 
 # -----------------------------------------------------------------------------
@@ -141,15 +143,21 @@ with tab1:
     # If new dataset loaded, run pipeline and populate session state
     if new_df is not None and (st.session_state.df_raw is None or st.session_state.dataset_name != new_name):
         with st.spinner("Analyzing dataset with autonomous detectors and diagnosis engine..."):
+            import time
+            t_start = time.perf_counter()
             st.session_state.df_raw = new_df
             st.session_state.dataset_name = new_name
             res = run_pipeline(new_df, dataset_name=new_name)
+            elapsed = time.perf_counter() - t_start
+            st.session_state.elapsed_time = elapsed
             st.session_state.pipeline_result = res
             st.session_state.audit_log = res.audit_log
             st.session_state.df_repaired = res.repaired_df
             st.session_state.decisions = {e.change_id: e.status for e in res.audit_log.entries}
             st.session_state.initial_decisions = {e.change_id: e.status for e in res.audit_log.entries}
-        st.success(f"Successfully loaded and analyzed **{new_name}** ({len(new_df):,} rows)")
+        elapsed_val = getattr(st.session_state, "elapsed_time", 0.0)
+        throughput_val = len(new_df) / max(elapsed_val, 0.001)
+        st.success(f"Successfully loaded and analyzed **{new_name}** ({len(new_df):,} rows in {elapsed_val:.2f}s — {throughput_val:,.0f} rows/s)")
 
     # Display profiling info if dataset is loaded
     if st.session_state.df_raw is not None and st.session_state.pipeline_result is not None:
@@ -485,6 +493,9 @@ with tab5:
         qcol2.metric("Data Quality Score (After)", f"{ma.overall_score:.1f} / 100", delta=f"{validation.score_delta:+.1f}")
         qcol3.metric("Newly Introduced Issues", f"{validation.issues_newly_introduced_count}", delta="0 defects added" if validation.issues_newly_introduced_count == 0 else "WARNING")
 
+        # Plotly Quality Gauge
+        st.plotly_chart(create_quality_gauge(mb.overall_score, ma.overall_score), use_container_width=True)
+
         st.divider()
 
         # Dimension Breakdown Table
@@ -527,6 +538,16 @@ with tab5:
             },
         ]
         st.dataframe(pd.DataFrame(dim_data), use_container_width=True)
+
+        # Plotly Column Health Heatmap
+        st.subheader("🔥 Column Health Heatmap (Defects Before vs After)")
+        st.plotly_chart(
+            create_column_heatmap(
+                st.session_state.pipeline_result.issues_before,
+                validation.remaining_issues
+            ),
+            use_container_width=True
+        )
 
         # ---------------------------------------------------------------------
         # Collateral Damage & Key Integrity Assessment (Feature 5)
@@ -704,6 +725,51 @@ with tab6:
             )
 
         st.success("✅ Exports are synchronized with your review decisions.")
+
+        # ---------------------------------------------------------------------
+        # Reproducibility & Provenance Verification Panel (Feature 7 & 8)
+        # ---------------------------------------------------------------------
+        st.divider()
+        st.subheader("🔒 Cryptographic Reproducibility & Provenance")
+        st.markdown("Verifiable SHA-256 hashes generated across input data, config, and output guarantee bit-level auditability.")
+
+        meta = getattr(st.session_state.pipeline_result, "metadata", None)
+        if meta:
+            hcol1, hcol2, hcol3 = st.columns(3)
+            hcol1.markdown(f"**Input SHA-256:**\n`{meta.input_sha256[:20]}...{meta.input_sha256[-8:]}`")
+            hcol2.markdown(f"**Config SHA-256:**\n`{meta.config_sha256[:20]}...{meta.config_sha256[-8:]}`")
+            hcol3.markdown(f"**Output SHA-256:**\n`{meta.output_sha256[:20]}...{meta.output_sha256[-8:]}`")
+
+        # Throughput Badge
+        elapsed_val = getattr(st.session_state, "elapsed_time", 0.0)
+        row_count = len(st.session_state.df_raw) if st.session_state.df_raw is not None else 0
+        if elapsed_val > 0:
+            throughput_val = row_count / max(elapsed_val, 0.001)
+            st.info(f"⚡ **Throughput Performance**: {row_count:,} rows processed in {elapsed_val:.2f} seconds ({throughput_val:,.0f} rows/s)")
+
+        if st.button("🔁 Verify Replay Provenance", use_container_width=True):
+            import tempfile
+            from datafix.pipeline import replay_audit_log
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                in_path = os.path.join(tmp_dir, "input.csv")
+                exp_path = os.path.join(tmp_dir, "expect.csv")
+                log_path = os.path.join(tmp_dir, "log.json")
+                
+                export_raw = st.session_state.df_raw.drop(columns=["_row_id"], errors="ignore")
+                export_raw.to_csv(in_path, index=False)
+                with open(exp_path, "w", encoding="utf-8") as f:
+                    f.write(bundle["cleaned_csv"])
+                with open(log_path, "w", encoding="utf-8") as f:
+                    f.write(bundle["change_log_json"])
+                
+                try:
+                    replay_res = replay_audit_log(in_path, log_path, exp_path)
+                    if replay_res["matches"]:
+                        st.success(f"✅ REPLAY VERIFICATION: PASS — Re-applied {replay_res['applied_change_count']} changes with exact SHA-256 hash match: `{replay_res['replayed_sha256'][:24]}...`")
+                    else:
+                        st.error(f"❌ REPLAY VERIFICATION: FAIL — Hash mismatch: replayed `{replay_res['replayed_sha256'][:16]}` != expected `{replay_res['expected_sha256'][:16]}`")
+                except Exception as re_err:
+                    st.error(f"❌ Replay verification failed: {re_err}")
 
         with st.expander("📄 Preview Audit Trail JSON", expanded=False):
             st.code(bundle["change_log_json"][:2000] + ("\n... [truncated]" if len(bundle["change_log_json"]) > 2000 else ""), language="json")
