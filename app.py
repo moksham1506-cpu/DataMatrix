@@ -10,6 +10,7 @@ import streamlit as st
 from datafix.config import Config
 from datafix.pipeline import DataFixPipeline, PipelineResult
 from datafix.profiler import profile_dataset
+from datafix.validate import validate_repair
 from datafix.ui_helpers import (
     validate_and_load_file,
     filter_issues,
@@ -366,9 +367,106 @@ with tab4:
             df_changes = pd.DataFrame(table_rows)
             st.dataframe(df_changes, use_container_width=True)
 
+# =============================================================================
+# TAB 5: VALIDATION
+# =============================================================================
 with tab5:
-    st.header("Validation")
-    st.info("Please load a dataset in Tab 1 to view validation results.")
+    st.header("Repair Validation & Quality Score Impact")
+    st.markdown("Post-repair verification executes full re-detection to prove issue resolution and ensure zero unintended defects.")
+
+    if (st.session_state.df_raw is None or 
+        st.session_state.df_repaired is None or 
+        st.session_state.pipeline_result is None):
+        st.info("Please load a dataset in Tab 1 to view validation results.")
+    else:
+        # Recompute fresh validation on the current state of repairs
+        validation = validate_repair(
+            df_original=st.session_state.df_raw,
+            df_repaired=st.session_state.df_repaired,
+            issues_before=st.session_state.pipeline_result.issues_before
+        )
+
+        mb = validation.metrics_before
+        ma = validation.metrics_after
+
+        # Top-level Quality Score Cards
+        qcol1, qcol2, qcol3 = st.columns(3)
+        qcol1.metric("Data Quality Score (Before)", f"{mb.overall_score:.1f} / 100")
+        qcol2.metric("Data Quality Score (After)", f"{ma.overall_score:.1f} / 100", delta=f"{validation.score_delta:+.1f}")
+        qcol3.metric("Newly Introduced Issues", f"{validation.issues_newly_introduced_count}", delta="0 defects added" if validation.issues_newly_introduced_count == 0 else "WARNING")
+
+        st.divider()
+
+        # Dimension Breakdown Table
+        st.subheader("Data Quality Dimensions: Before vs After")
+        dim_data = [
+            {
+                "Dimension": "Overall Quality Score",
+                "Weight": "100%",
+                "Score Before": f"{mb.overall_score:.1f}",
+                "Score After": f"{ma.overall_score:.1f}",
+                "Delta": f"{ma.overall_score - mb.overall_score:+.1f}"
+            },
+            {
+                "Dimension": "Completeness",
+                "Weight": "30%",
+                "Score Before": f"{mb.completeness_score:.1f}",
+                "Score After": f"{ma.completeness_score:.1f}",
+                "Delta": f"{ma.completeness_score - mb.completeness_score:+.1f}"
+            },
+            {
+                "Dimension": "Validity",
+                "Weight": "30%",
+                "Score Before": f"{mb.validity_score:.1f}",
+                "Score After": f"{ma.validity_score:.1f}",
+                "Delta": f"{ma.validity_score - mb.validity_score:+.1f}"
+            },
+            {
+                "Dimension": "Uniqueness",
+                "Weight": "20%",
+                "Score Before": f"{mb.uniqueness_score:.1f}",
+                "Score After": f"{ma.uniqueness_score:.1f}",
+                "Delta": f"{ma.uniqueness_score - mb.uniqueness_score:+.1f}"
+            },
+            {
+                "Dimension": "Consistency",
+                "Weight": "20%",
+                "Score Before": f"{mb.consistency_score:.1f}",
+                "Score After": f"{ma.consistency_score:.1f}",
+                "Delta": f"{ma.consistency_score - mb.consistency_score:+.1f}"
+            },
+        ]
+        st.dataframe(pd.DataFrame(dim_data), use_container_width=True)
+
+        st.divider()
+
+        # Defect Resolution Summary
+        st.subheader("Defect Resolution Summary")
+        rcol1, rcol2, rcol3 = st.columns(3)
+        rcol1.metric("Total Issues (Initial)", validation.issues_before_count)
+        rcol2.metric("Issues Successfully Resolved", validation.issues_resolved_count)
+        rcol3.metric("Issues Remaining", validation.issues_remaining_count)
+
+        # Unresolved Issues Table
+        st.subheader("Unresolved Issues Table")
+        if validation.remaining_issues:
+            unres_rows = []
+            for issue in validation.remaining_issues:
+                reason = validation.unresolved_reasons.get(
+                    issue.issue_id,
+                    "Ambiguous repair or confidence below auto_apply_threshold"
+                )
+                unres_rows.append({
+                    "Issue ID": issue.issue_id,
+                    "Type": issue.issue_type,
+                    "Columns": ", ".join(issue.columns),
+                    "Affected Rows": len(issue.row_ids),
+                    "Severity": issue.severity.upper(),
+                    "Reason Unresolved": reason
+                })
+            st.dataframe(pd.DataFrame(unres_rows), use_container_width=True)
+        else:
+            st.success("🎉 All detected quality issues have been completely resolved!")
 
 with tab6:
     st.header("Export")
