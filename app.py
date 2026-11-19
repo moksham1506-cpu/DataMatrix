@@ -521,6 +521,59 @@ with tab5:
         ]
         st.dataframe(pd.DataFrame(dim_data), use_container_width=True)
 
+        # ---------------------------------------------------------------------
+        # Collateral Damage & Key Integrity Assessment (Feature 5)
+        # ---------------------------------------------------------------------
+        if validation.collateral_damage:
+            cd = validation.collateral_damage
+            st.divider()
+            st.subheader("🛡️ Collateral Damage & Key Integrity Assessment")
+            st.markdown("Proves that repairs remained targeted: verifies that originally valid cells were untouched and keys were preserved.")
+
+            col_cd1, col_cd2, col_cd3, col_cd4 = st.columns(4)
+            col_cd1.metric(
+                "Valid Cells Unchanged",
+                f"{cd.valid_cells_unchanged_pct:.2f}%",
+                delta="Target: 100%"
+            )
+            col_cd2.metric(
+                "Unintended Changes",
+                f"{cd.unintended_changes_count}",
+                delta="0 edits" if cd.unintended_changes_count == 0 else f"{cd.unintended_changes_count} unintended"
+            )
+            col_cd3.metric(
+                "Clean Rows Affected",
+                f"{cd.changed_cells_in_clean_rows}",
+                delta="Target: 0 clean rows"
+            )
+            row_delta = cd.row_count_after - cd.row_count_before
+            col_cd4.metric(
+                "Dataset Row Count",
+                f"{cd.row_count_after:,}",
+                delta=f"{row_delta:+,} rows ({cd.rows_removed} dups dropped)" if cd.rows_removed > 0 else "No row loss"
+            )
+
+            # Key Integrity Report
+            pk_fk = cd.pk_fk_integrity
+            if pk_fk.get("integrity_preserved", True):
+                st.success("✅ **Primary & Foreign Key Integrity 100% Preserved**: Zero orphaned foreign keys or duplicate primary keys introduced.")
+            else:
+                st.warning("⚠️ **Key Integrity Warning**: Discrepancies detected in relational key constraints.")
+
+            if pk_fk.get("primary_keys"):
+                with st.expander("🔑 Inspect Primary Key Columns Integrity", expanded=False):
+                    pk_rows = []
+                    for col, stat in pk_fk["primary_keys"].items():
+                        pk_rows.append({
+                            "Key Column": col,
+                            "Unique Before": stat.get("unique_before"),
+                            "Unique After": stat.get("unique_after"),
+                            "Nulls Before": stat.get("nulls_before"),
+                            "Nulls After": stat.get("nulls_after"),
+                            "Integrity Preserved": "✅ Yes" if stat.get("preserved") else "❌ No"
+                        })
+                    st.dataframe(pd.DataFrame(pk_rows), use_container_width=True)
+
         st.divider()
 
         # Defect Resolution Summary
