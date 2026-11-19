@@ -164,6 +164,76 @@ def apply_bulk_threshold(
     return count
 
 
+def paginate_entries(
+    entries: List[ChangeLogEntry],
+    page: int = 1,
+    page_size: int = 200
+) -> Tuple[List[ChangeLogEntry], int]:
+    """Slice entries for the requested page and return (page_entries, total_pages)."""
+    if not entries:
+        return [], 1
+    total_pages = max(1, (len(entries) + page_size - 1) // page_size)
+    current_page = max(1, min(page, total_pages))
+    start_idx = (current_page - 1) * page_size
+    end_idx = min(start_idx + page_size, len(entries))
+    return entries[start_idx:end_idx], total_pages
+
+
+def build_diff_dataframe(entries: List[ChangeLogEntry]) -> pd.DataFrame:
+    """Build a rich DataFrame of modifications showing old -> new, reason, and confidence."""
+    rows = []
+    for e in entries:
+        conf = round(float(e.confidence), 3)
+        if conf >= 0.85:
+            tier = "High (≥0.85)"
+        elif conf >= 0.60:
+            tier = "Medium (0.60–0.85)"
+        else:
+            tier = "Low (<0.60)"
+
+        rows.append({
+            "change_id": e.change_id,
+            "row_id": e.row_id,
+            "column": e.column,
+            "diff": f"{e.old_value}  ➔  {e.new_value}",
+            "old_value": str(e.old_value),
+            "new_value": str(e.new_value),
+            "confidence": conf,
+            "confidence_tier": tier,
+            "reason": e.reason,
+            "status": e.status,
+        })
+    if not rows:
+        return pd.DataFrame(columns=[
+            "change_id", "row_id", "column", "diff", "old_value", "new_value",
+            "confidence", "confidence_tier", "reason", "status"
+        ])
+    return pd.DataFrame(rows)
+
+
+def style_confidence_dataframe(df: pd.DataFrame) -> Any:
+    """Colorize rows by confidence score: green (>=0.85), amber (0.60-0.85), red (<0.60)."""
+    def _row_styler(row):
+        conf = row.get("confidence", 0.0)
+        try:
+            cval = float(conf)
+        except (ValueError, TypeError):
+            cval = 0.0
+
+        if cval >= 0.85:
+            # Soft green
+            bg = "background-color: #dcfce7; color: #166534;"
+        elif cval >= 0.60:
+            # Soft amber
+            bg = "background-color: #fef3c7; color: #92400e;"
+        else:
+            # Soft red
+            bg = "background-color: #fee2e2; color: #991b1b;"
+        return [bg] * len(row)
+
+    return df.style.apply(_row_styler, axis=1)
+
+
 def generate_export_bundle(
     original_df: pd.DataFrame,
     repaired_df: pd.DataFrame,

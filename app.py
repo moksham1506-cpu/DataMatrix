@@ -17,6 +17,9 @@ from datafix.ui_helpers import (
     apply_change_decisions,
     apply_bulk_threshold,
     generate_export_bundle,
+    paginate_entries,
+    build_diff_dataframe,
+    style_confidence_dataframe,
 )
 
 # -----------------------------------------------------------------------------
@@ -69,6 +72,8 @@ if "df_repaired" not in st.session_state:
     st.session_state.df_repaired = None
 if "decisions" not in st.session_state:
     st.session_state.decisions = {}
+if "initial_decisions" not in st.session_state:
+    st.session_state.initial_decisions = {}
 
 # -----------------------------------------------------------------------------
 # MAIN TABS SETUP
@@ -135,6 +140,7 @@ with tab1:
             st.session_state.audit_log = res.audit_log
             st.session_state.df_repaired = res.repaired_df
             st.session_state.decisions = {e.change_id: e.status for e in res.audit_log.entries}
+            st.session_state.initial_decisions = {e.change_id: e.status for e in res.audit_log.entries}
         st.success(f"Successfully loaded and analyzed **{new_name}** ({len(new_df):,} rows)")
 
     # Display profiling info if dataset is loaded
@@ -320,7 +326,7 @@ with tab4:
                     st.rerun()
 
             with act_col2:
-                st.subheader("✍️ Approve / Reject Individual Change")
+                st.subheader("✍️ Approve / Reject / Undo Changes")
                 change_options = [
                     f"{e.change_id} | Row {e.row_id} | Col: {e.column} | [{e.status.upper()}] (Conf: {e.confidence:.2f})"
                     for e in entries
@@ -328,9 +334,9 @@ with tab4:
                 sel_change_str = st.selectbox("Select Change", options=change_options)
                 sel_change_id = sel_change_str.split(" | ")[0] if sel_change_str else None
 
-                btn_col1, btn_col2 = st.columns(2)
+                btn_col1, btn_col2, btn_col3 = st.columns(3)
                 with btn_col1:
-                    if st.button("✅ Approve Selected", use_container_width=True):
+                    if st.button("✅ Approve", use_container_width=True):
                         st.session_state.decisions[sel_change_id] = "approved"
                         df_repaired, audit_log = apply_change_decisions(
                             st.session_state.df_raw, audit_log, st.session_state.decisions
@@ -340,7 +346,7 @@ with tab4:
                         st.success(f"Approved change {sel_change_id}")
                         st.rerun()
                 with btn_col2:
-                    if st.button("❌ Reject Selected", use_container_width=True):
+                    if st.button("❌ Reject", use_container_width=True):
                         st.session_state.decisions[sel_change_id] = "rejected"
                         df_repaired, audit_log = apply_change_decisions(
                             st.session_state.df_raw, audit_log, st.session_state.decisions
@@ -349,25 +355,54 @@ with tab4:
                         st.session_state.audit_log = audit_log
                         st.warning(f"Rejected change {sel_change_id}")
                         st.rerun()
+                with btn_col3:
+                    if st.button("↩️ Undo", use_container_width=True):
+                        orig_status = st.session_state.initial_decisions.get(sel_change_id, "suggested")
+                        st.session_state.decisions[sel_change_id] = orig_status
+                        df_repaired, audit_log = apply_change_decisions(
+                            st.session_state.df_raw, audit_log, st.session_state.decisions
+                        )
+                        st.session_state.df_repaired = df_repaired
+                        st.session_state.audit_log = audit_log
+                        st.info(f"Reverted {sel_change_id} to {orig_status}")
+                        st.rerun()
 
             st.divider()
 
-            # Table of Changes
-            st.subheader("Audit Trail: Table of Changes")
-            table_rows = []
-            for e in entries:
-                table_rows.append({
-                    "change_id": e.change_id,
-                    "row_id": e.row_id,
-                    "column": e.column,
-                    "old_value": str(e.old_value),
-                    "new_value": str(e.new_value),
-                    "confidence": round(e.confidence, 3),
-                    "reason": e.reason,
-                    "status": e.status
-                })
-            df_changes = pd.DataFrame(table_rows)
-            st.dataframe(df_changes, use_container_width=True)
+            # Cell-Level Diff Viewer with Confidence Color Coding and Pagination
+            st.subheader("🔍 Cell-Level Diff Viewer (Color-coded by Confidence)")
+            
+            # Confidence Color Legend
+            leg_c1, leg_c2, leg_c3 = st.columns(3)
+            leg_c1.markdown("🟢 **High Confidence (≥ 0.85)**: Auto-applied safe repairs", help="Green background")
+            leg_c2.markdown("🟡 **Medium Confidence (0.60–0.85)**: Suggestions for human review", help="Amber background")
+            leg_c3.markdown("🔴 **Low Confidence (< 0.60)**: High discretion repairs", help="Red background")
+
+            # Pagination controls (200 rows per page)
+            page_size = 200
+            total_pages = max(1, (len(entries) + page_size - 1) // page_size)
+
+            pcol1, pcol2 = st.columns([1, 3])
+            with pcol1:
+                current_page = st.number_input(
+                    f"Page (1 to {total_pages})",
+                    min_value=1,
+                    max_value=total_pages,
+                    value=1,
+                    step=1
+                )
+            with pcol2:
+                start_row = (current_page - 1) * page_size + 1
+                end_row = min(current_page * page_size, len(entries))
+                st.write("")
+                st.caption(f"Displaying modifications **{start_row:,}** to **{end_row:,}** of **{len(entries):,}** total changes")
+
+            page_entries, _ = paginate_entries(entries, page=current_page, page_size=page_size)
+            df_diff = build_diff_dataframe(page_entries)
+            
+            # Render styled dataframe with cell-level colors and old -> new diff
+            styled_diff = style_confidence_dataframe(df_diff)
+            st.dataframe(styled_diff, use_container_width=True)
 
 # =============================================================================
 # TAB 5: VALIDATION

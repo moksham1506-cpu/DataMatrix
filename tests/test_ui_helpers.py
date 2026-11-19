@@ -196,3 +196,57 @@ def test_generate_export_bundle():
     assert "change_log_csv" in bundle
     assert "change_log_json" in bundle
     assert "validation" in bundle
+
+
+def test_paginate_entries():
+    """Test pagination of audit entries."""
+    from datafix.ui_helpers import paginate_entries
+    entries = [
+        ChangeLogEntry(
+            change_id=f"C_{i}",
+            timestamp="2026-01-01T00:00:00Z",
+            row_id=i,
+            column="col",
+            old_value="a",
+            new_value="b",
+            issue_id="I1",
+            strategy="strat",
+            reason="reason",
+            confidence=0.9,
+            status="applied"
+        )
+        for i in range(450)
+    ]
+    p1, total = paginate_entries(entries, page=1, page_size=200)
+    assert len(p1) == 200
+    assert total == 3
+    assert p1[0].change_id == "C_0"
+
+    p2, _ = paginate_entries(entries, page=2, page_size=200)
+    assert len(p2) == 200
+    assert p2[0].change_id == "C_200"
+
+    p3, _ = paginate_entries(entries, page=3, page_size=200)
+    assert len(p3) == 50
+    assert p3[0].change_id == "C_400"
+
+
+def test_build_diff_dataframe_and_styler():
+    """Test creating formatted diff dataframe and confidence styling."""
+    from datafix.ui_helpers import build_diff_dataframe, style_confidence_dataframe
+    entries = [
+        ChangeLogEntry("C1", "2026-01-01", 1, "col", "old1", "new1", "I1", "strat", "reason1", 0.95, "applied"),
+        ChangeLogEntry("C2", "2026-01-01", 2, "col", "old2", "new2", "I2", "strat", "reason2", 0.75, "suggested"),
+        ChangeLogEntry("C3", "2026-01-01", 3, "col", "old3", "new3", "I3", "strat", "reason3", 0.40, "suggested"),
+    ]
+    df = build_diff_dataframe(entries)
+    assert len(df) == 3
+    assert "diff" in df.columns
+    assert "old1  ➔  new1" in df["diff"].iloc[0]
+    assert df["confidence_tier"].iloc[0] == "High (≥0.85)"
+    assert df["confidence_tier"].iloc[1] == "Medium (0.60–0.85)"
+    assert df["confidence_tier"].iloc[2] == "Low (<0.60)"
+
+    styler = style_confidence_dataframe(df)
+    assert styler is not None
+
