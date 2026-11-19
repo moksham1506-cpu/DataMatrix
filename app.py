@@ -33,7 +33,7 @@ st.set_page_config(
 )
 
 st.title("🛠️ DataFix: Autonomous Data Quality & Repair Engine")
-st.caption("We don't just clean data, we prove what we changed, why, and how it was validated.")
+st.caption("We don't just clean data, we prove what we changed.")
 
 # -----------------------------------------------------------------------------
 # CACHED PIPELINE EXECUTION
@@ -50,6 +50,13 @@ def load_demo_data_cached() -> pd.DataFrame:
         if p.exists():
             return pd.read_csv(p)
     raise FileNotFoundError("Demo dataset not found in data/ directory.")
+
+
+@st.cache_data(show_spinner=False)
+def load_benchmark_scoreboard_cached():
+    """Retrieve ground-truth scoreboard metrics with caching."""
+    from benchmark import get_benchmark_scoreboard
+    return get_benchmark_scoreboard()
 
 
 def run_pipeline(df: pd.DataFrame, dataset_name: str) -> PipelineResult:
@@ -603,6 +610,39 @@ with tab5:
             st.dataframe(pd.DataFrame(unres_rows), use_container_width=True)
         else:
             st.success("🎉 All detected quality issues have been completely resolved!")
+
+        # ---------------------------------------------------------------------
+        # Ground-Truth Scoreboard (Feature 6: Demo Dataset Only)
+        # ---------------------------------------------------------------------
+        is_demo = any(k in str(st.session_state.dataset_name).lower() for k in ["demo", "customer", "order"])
+        if is_demo:
+            st.divider()
+            st.subheader("🏆 Ground-Truth Benchmark Scoreboard (Demo Dataset)")
+            st.markdown("Precision, recall, and repair accuracy evaluated against known injected errors in `ground_truth.json`:")
+
+            try:
+                board_data = load_benchmark_scoreboard_cached()
+                bsummary = board_data["summary"]
+
+                bcol1, bcol2, bcol3, bcol4 = st.columns(4)
+                bcol1.metric("Detection Recall", f"{bsummary['overall_detection_recall']:.1f}%", help="Percentage of true injected defects detected")
+                bcol2.metric("Detection Precision", f"{bsummary['overall_detection_precision']:.1f}%", help="Percentage of reported issues that were actual defects")
+                bcol3.metric("Repair Accuracy", f"{bsummary['repair_accuracy']:.1f}%", help="Percentage of repaired cells matching ground truth exactly")
+                bcol4.metric("Unintended Changes", f"{bsummary.get('unintended_changes', 0)}", delta="0 edits outside ground truth" if bsummary.get('unintended_changes', 0) == 0 else "WARNING")
+
+                cat_rows = []
+                for itype, m in bsummary.get("metrics_by_issue_type", {}).items():
+                    cat_rows.append({
+                        "Issue Category": itype.replace("_", " ").title(),
+                        "Ground Truth Count": m["ground_truth_count"],
+                        "Detected Count": m["detected_count"],
+                        "Precision": f"{m['precision']:.1f}%",
+                        "Recall": f"{m['recall']:.1f}%",
+                        "F1-Score": f"{m['f1_score']:.1f}%"
+                    })
+                st.dataframe(pd.DataFrame(cat_rows), use_container_width=True)
+            except Exception as e:
+                st.error(f"Failed to calculate benchmark scoreboard: {e}")
 
 # =============================================================================
 # TAB 6: EXPORT
