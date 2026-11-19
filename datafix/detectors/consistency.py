@@ -41,6 +41,15 @@ def detect_inconsistencies(df: pd.DataFrame, config: Optional[Config] = None) ->
         if series.dtype != object and not isinstance(series.dtype, pd.StringDtype):
             continue
 
+        col_lower = col.lower()
+        # Skip date, numeric, identifier columns from category consistency checks
+        if any(kw in col_lower for kw in ["date", "time", "_id", "id", "_key", "key", "timestamp", "price", "amount", "phone", "email"]):
+            continue
+
+        inferred = infer_column_type(series, disguised_set)
+        if inferred not in {"category", "text"}:
+            continue
+
         valid_mask = series.notna()
         if not valid_mask.any():
             continue
