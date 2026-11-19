@@ -110,3 +110,42 @@ def test_repair_idempotency():
             vals1 = df_repaired_1[col].tolist()
             vals2 = df_repaired_2[col].tolist()
             assert vals1 == vals2, f"Column '{col}' changed between pass 1 and pass 2!"
+
+
+def test_safe_assign_and_string_dtype_tolerance():
+    """Verify safe_assign handles strict StringDtype, Arrow strings, and avoids TypeErrors."""
+    from datafix.profiler import safe_assign
+
+    # 1. Direct safe_assign test on strict string series
+    df = pd.DataFrame({
+        "str_col": ["alpha", "beta"],
+        "num_col": [10, 20]
+    })
+    df["str_col"] = df["str_col"].astype("string")
+
+    # Assigning float into strict string column must not raise TypeError
+    mask = df["str_col"] == "alpha"
+    safe_assign(df, mask, "str_col", 399.7)
+    assert df.loc[0, "str_col"] == 399.7
+
+    # 2. End-to-end repair with strict string dtypes on numeric column
+    df_dataset = pd.DataFrame({
+        "quantity": [2, 4],
+        "unit_price": [50.0, 25.0],
+        "total_amount": ["100.0", "50.0"],  # Row 1 arithmetic mismatch: 4 * 25 = 100 != 50
+        "country": ["USA", "United States"],
+        "customer_name": ["Alice", "Bob"]
+    })
+    df_dataset["total_amount"] = df_dataset["total_amount"].astype("string")
+    df_dataset["country"] = df_dataset["country"].astype("string")
+    df_dataset["customer_name"] = df_dataset["customer_name"].astype("string")
+
+    issues = run_all_detectors(df_dataset)
+    df_repaired, audit = repair_dataset(df_dataset, issues)
+
+    # Total amount should be repaired to 100.0 without TypeError
+    assert df_repaired["total_amount"].iloc[1] == 100.0
+    # String columns should not be corrupted
+    assert df_repaired["country"].iloc[0] == "United States"
+    assert df_repaired["customer_name"].iloc[1] == "Bob"
+

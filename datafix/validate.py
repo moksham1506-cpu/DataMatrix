@@ -185,7 +185,12 @@ def compute_collateral_damage(
         rep_col = repaired_by_id.loc[common_row_ids, col]
 
         # Check differences (ignoring NaN == NaN)
-        diff_mask = (orig_col != rep_col) & ~(orig_col.isna() & rep_col.isna())
+        try:
+            diff_mask = (orig_col != rep_col) & ~(orig_col.isna() & rep_col.isna())
+        except Exception:
+            s_orig = orig_col.astype(object)
+            s_rep = rep_col.astype(object)
+            diff_mask = (s_orig != s_rep) & ~(s_orig.isna() & s_rep.isna())
         diff_rows = diff_mask[diff_mask].index
 
         for r_id in diff_rows:

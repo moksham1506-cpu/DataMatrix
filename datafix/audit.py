@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Optional
 import pandas as pd
 
 from datafix.models import ChangeLogEntry
+from datafix.profiler import safe_assign
 
 
 class AuditLog:
@@ -52,7 +53,7 @@ class AuditLog:
         row_mask = df_copy["_row_id"] == entry.row_id
         if row_mask.any() and entry.column in df_copy.columns:
             # Restore original value
-            df_copy.loc[row_mask, entry.column] = entry.old_value
+            safe_assign(df_copy, row_mask, entry.column, entry.old_value)
             entry.status = "reverted"
 
         return df_copy
@@ -64,7 +65,7 @@ class AuditLog:
             if entry.status == "approved":
                 row_mask = df_copy["_row_id"] == entry.row_id
                 if row_mask.any() and entry.column in df_copy.columns:
-                    df_copy.loc[row_mask, entry.column] = entry.new_value
+                    safe_assign(df_copy, row_mask, entry.column, entry.new_value)
                     entry.status = "applied"
         return df_copy
 

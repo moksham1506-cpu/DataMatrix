@@ -12,7 +12,7 @@ from datafix.config import Config
 from datafix.models import Issue, ChangeLogEntry
 from datafix.audit import AuditLog
 from datafix.confidence import calculate_repair_confidence
-from datafix.profiler import ensure_row_id, infer_column_type
+from datafix.profiler import ensure_row_id, infer_column_type, safe_assign
 from datafix.detectors.consistency import KNOWN_CANONICAL_SYNONYMS
 
 
@@ -75,6 +75,10 @@ def repair_dataset(
                     cleaned_str = re.sub(r"[\$,€£¥\s]|USD|EUR|GBP", "", str(old_val)).strip()
                     try:
                         new_val = float(cleaned_str)
+                    except (ValueError, TypeError):
+                        continue
+
+                    try:
                         conf = calculate_repair_confidence(issue, "parse_numeric_string", old_val, new_val)
                         status = "applied" if conf >= cfg.auto_apply_threshold else "suggested"
                         
@@ -93,7 +97,7 @@ def repair_dataset(
                         )
                         audit_log.add_entry(entry)
                         if status == "applied":
-                            df_repaired.loc[row_mask, col] = new_val
+                            safe_assign(df_repaired, row_mask, col, new_val)
                     except Exception:
                         pass
 
@@ -135,7 +139,7 @@ def repair_dataset(
                         )
                         audit_log.add_entry(entry)
                         if status == "applied":
-                            df_repaired.loc[row_mask, col] = new_val
+                            safe_assign(df_repaired, row_mask, col, new_val)
                     except Exception:
                         pass
 
@@ -219,7 +223,7 @@ def repair_dataset(
                     )
                     audit_log.add_entry(entry)
                     if status == "applied":
-                        df_repaired.loc[row_mask, col] = canon
+                        safe_assign(df_repaired, row_mask, col, canon)
 
         # ---------------------------------------------------------------------
         # 3. REPAIR MISSING VALUES & DISGUISED NULLS
@@ -252,7 +256,7 @@ def repair_dataset(
                         status="applied"
                     )
                     audit_log.add_entry(entry)
-                    df_repaired.loc[row_mask, col] = np.nan
+                    safe_assign(df_repaired, row_mask, col, np.nan)
                 elif pd.isna(old_val):
                     # Flag missing value without guessing private personal identifiers
                     entry = ChangeLogEntry(
@@ -306,7 +310,7 @@ def repair_dataset(
                         )
                         audit_log.add_entry(entry)
                         if status == "applied":
-                            df_repaired.loc[row_mask, total_col] = recomputed
+                            safe_assign(df_repaired, row_mask, total_col, recomputed)
 
             # Inverted chronological timestamps (delivery < order)
             elif v_type == "chronological_inversion":
@@ -383,7 +387,7 @@ def repair_dataset(
                         )
                         audit_log.add_entry(entry)
                         if status == "applied":
-                            df_repaired.loc[row_mask, col] = corrected
+                            safe_assign(df_repaired, row_mask, col, corrected)
 
         # ---------------------------------------------------------------------
         # 6. REPAIR DUPLICATES (Exact Rows Only)

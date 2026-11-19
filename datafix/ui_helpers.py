@@ -8,7 +8,7 @@ import pandas as pd
 
 from datafix.config import Config
 from datafix.models import Issue, ChangeLogEntry
-from datafix.profiler import ensure_row_id
+from datafix.profiler import ensure_row_id, safe_assign
 from datafix.audit import AuditLog
 from datafix.validate import validate_repair, ValidationResult, compute_quality_metrics
 from datafix.report import generate_html_report
@@ -140,7 +140,7 @@ def apply_change_decisions(
             elif entry.column in df_repaired.columns:
                 row_mask = df_repaired["_row_id"] == entry.row_id
                 if row_mask.any():
-                    df_repaired.loc[row_mask, entry.column] = entry.new_value
+                    safe_assign(df_repaired, row_mask, entry.column, entry.new_value)
 
     if rows_to_drop:
         df_repaired = df_repaired[~df_repaired["_row_id"].isin(rows_to_drop)].copy()

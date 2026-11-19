@@ -13,7 +13,7 @@ import pandas as pd
 
 from datafix.config import Config
 from datafix.models import Issue
-from datafix.profiler import ensure_row_id, profile_dataset, DatasetProfile
+from datafix.profiler import ensure_row_id, profile_dataset, DatasetProfile, safe_assign
 from datafix.detectors import run_all_detectors
 from datafix.diagnose import diagnose_root_causes, Diagnosis
 from datafix.repair import repair_dataset
@@ -206,9 +206,9 @@ def replay_audit_log(
                 row_mask = df_replayed["_row_id"] == r_id
                 if row_mask.any():
                     if new_val is None or (isinstance(new_val, str) and new_val.lower() in {"nan", "none"}):
-                        df_replayed.loc[row_mask, col] = np.nan
+                        safe_assign(df_replayed, row_mask, col, np.nan)
                     else:
-                        df_replayed.loc[row_mask, col] = new_val
+                        safe_assign(df_replayed, row_mask, col, new_val)
 
     if rows_to_drop:
         df_replayed = df_replayed[~df_replayed["_row_id"].isin(rows_to_drop)].copy()

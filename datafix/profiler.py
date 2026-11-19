@@ -65,6 +65,28 @@ def ensure_row_id(df: pd.DataFrame) -> pd.DataFrame:
     return df_copy
 
 
+def safe_assign(df: pd.DataFrame, mask: Any, col: str, val: Any) -> None:
+    """Safely assign a value to df.loc[mask, col] without dtype mismatch errors.
+    
+    Handles StringDtype, ArrowDtype, Categorical, or Integer arrays that cannot
+    directly accept floats, NaN, or non-matching types by safely widening the
+    column's dtype to object first. Preserves string columns when assigning strings.
+    """
+    if col not in df.columns:
+        return
+    if hasattr(mask, "any"):
+        if not mask.any():
+            return
+    elif not mask:
+        return
+
+    try:
+        df.loc[mask, col] = val
+    except (TypeError, ValueError):
+        df[col] = df[col].astype(object)
+        df.loc[mask, col] = val
+
+
 def infer_column_type(series: pd.Series, disguised_nulls: Set[str]) -> str:
     """Infer the high-level semantic type of a pandas Series."""
     # Drop real nulls and disguised nulls for type inspection
