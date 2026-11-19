@@ -1,4 +1,4 @@
-"""DataFix Command Line Interface: Run autonomous data quality and repair from the terminal."""
+"""DataFix Command Line Interface: Run autonomous data quality, repair, and replay verification."""
 
 from __future__ import annotations
 import argparse
@@ -8,10 +8,55 @@ from pathlib import Path
 import pandas as pd
 
 from datafix.config import Config
-from datafix.pipeline import DataFixPipeline
+from datafix.pipeline import DataFixPipeline, replay_audit_log
+
+
+def run_replay(args_list: List[str]):
+    """Execute replay verification command."""
+    parser = argparse.ArgumentParser(
+        prog="python -m datafix.cli replay",
+        description="DataFix Replay: Re-apply change log to input dataset and verify SHA-256 match against expected output."
+    )
+    parser.add_argument("--input", "-i", required=True, help="Original input dataset path")
+    parser.add_argument("--log", "-l", required=True, help="Change log JSON file path")
+    parser.add_argument("--expect", "-e", required=True, help="Expected cleaned dataset path to verify against")
+
+    args = parser.parse_args(args_list)
+
+    print(f"[*] Replaying change log '{args.log}' onto '{args.input}'...")
+    try:
+        res = replay_audit_log(args.input, args.log, args.expect)
+    except Exception as err:
+        print(f"[-] Replay failed with error: {err}", file=sys.stderr)
+        sys.exit(1)
+
+    if res["matches"]:
+        print("\n" + "=" * 65)
+        print(" REPRODUCIBILITY VERIFICATION: PASSED")
+        print("=" * 65)
+        print(f"  Input Dataset        : {args.input}")
+        print(f"  Change Log Applied   : {args.log} ({res['applied_change_count']} changes re-applied)")
+        print(f"  Replayed Output Hash : {res['replayed_sha256']}")
+        print(f"  Expected Output Hash : {res['expected_sha256']}")
+        print("=" * 65 + "\n")
+        print("[+] Output hashes match perfectly. Bit-level reproducibility confirmed.")
+        sys.exit(0)
+    else:
+        print("\n" + "=" * 65, file=sys.stderr)
+        print(" REPRODUCIBILITY VERIFICATION: FAILED", file=sys.stderr)
+        print("=" * 65, file=sys.stderr)
+        print(f"  Replayed Output Hash : {res['replayed_sha256']}", file=sys.stderr)
+        print(f"  Expected Output Hash : {res['expected_sha256']}", file=sys.stderr)
+        print(f"  Row Counts           : replayed={res['replayed_rows']}, expected={res['expected_rows']}", file=sys.stderr)
+        print("=" * 65 + "\n", file=sys.stderr)
+        sys.exit(1)
 
 
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "replay":
+        run_replay(sys.argv[2:])
+        return
+
     parser = argparse.ArgumentParser(
         prog="python -m datafix.cli",
         description="DataFix: Autonomous Data Quality and Repair Engine."
