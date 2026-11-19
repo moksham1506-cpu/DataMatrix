@@ -1,0 +1,9 @@
+user_id,email,signup_date,score,notes,is_active
+101,user1@example.com,2023-01-15,85.5,Early adopter,True
+102,,,92.0,,
+103,,2023-03-22,,,False
+104,user4@domain.org,,,,
+105,,,,,
+106,invalid-email,2023-05-18,74.0,Needs follow up,True
+107,,,N/A,,
+108,,,,Missing record,

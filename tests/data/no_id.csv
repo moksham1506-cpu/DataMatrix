@@ -1,0 +1,6 @@
+product_name,category,unit_price,quantity,in_stock
+Wireless Mouse,Electronics,25.99,2,True
+Gaming Keyboard,Electronics,$45.00,1,True
+USB-C Cable,Accessories,9.99,5,True
+Office Chair,Furniture,120.00,1,False
+Desk Lamp,Home,35.50,2,True
