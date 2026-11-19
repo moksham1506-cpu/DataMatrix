@@ -62,3 +62,30 @@ def test_generate_html_report(tmp_path):
     assert "DataFix Quality & Audit Report" in html
     assert "TestDataset" in html
     assert out_file.exists()
+
+
+def test_collateral_damage_assessment():
+    df_orig = pd.DataFrame({
+        "_row_id": [0, 1, 2, 3],
+        "user_id": [101, 102, 103, 104],
+        "country": ["USA", "United States", "Canada", "Germany"],
+        "price": ["$10.00", "$20.00", "30.00", "40.00"]
+    })
+    # Issues detected on rows 0 and 1
+    issues = run_all_detectors(df_orig)
+    df_rep, audit = repair_dataset(df_orig, issues)
+    validation = validate_repair(df_orig, df_rep, issues)
+
+    cd = validation.collateral_damage
+    assert cd is not None
+    # 1. (a) % of originally valid cells left unchanged should be 100%
+    assert cd.valid_cells_unchanged_pct == 100.0
+    # 2. (b) Changed cells in clean rows (rows 2 and 3) should be 0
+    assert cd.changed_cells_in_clean_rows == 0
+    # 3. (c) Primary key integrity before vs after preserved
+    assert cd.pk_fk_integrity["integrity_preserved"] is True
+    assert cd.pk_fk_integrity["primary_keys"]["user_id"]["preserved"] is True
+    # 4. (d) Row count before vs after
+    assert cd.row_count_before == 4
+    assert cd.row_count_after == 4
+    assert cd.rows_removed == 0

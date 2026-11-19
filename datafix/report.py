@@ -197,6 +197,43 @@ HTML_REPORT_TEMPLATE = """<!DOCTYPE html>
       </div>
     </div>
 
+    <!-- Trust & Collateral Damage Score Card -->
+    {% if validation.collateral_damage %}
+    <div class="section" style="border-left: 4px solid var(--success);">
+      <h2>Backend Trust & Collateral Damage Assessment</h2>
+      <div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 0;">
+        <div>
+          <div class="card-subtext">Valid Cells Preserved</div>
+          <div style="font-size: 24px; font-weight: 700; color: var(--success);">
+            {{ validation.collateral_damage.valid_cells_unchanged_pct }}%
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted);">Zero silent mutations to valid data</div>
+        </div>
+        <div>
+          <div class="card-subtext">Edits in Clean Rows</div>
+          <div style="font-size: 24px; font-weight: 700; color: {% if validation.collateral_damage.changed_cells_in_clean_rows == 0 %}var(--success){% else %}var(--danger){% endif %};">
+            {{ validation.collateral_damage.changed_cells_in_clean_rows }}
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted);">Unintended modifications</div>
+        </div>
+        <div>
+          <div class="card-subtext">Key & Relational Integrity</div>
+          <div style="font-size: 24px; font-weight: 700; color: var(--success);">
+            {% if validation.collateral_damage.pk_fk_integrity.integrity_preserved %}Preserved{% else %}Check Needed{% endif %}
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted);">PK/FK relationships safe</div>
+        </div>
+        <div>
+          <div class="card-subtext">Row Count (Before &rarr; After)</div>
+          <div style="font-size: 24px; font-weight: 700;">
+            {{ validation.collateral_damage.row_count_before }} &rarr; {{ validation.collateral_damage.row_count_after }}
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted);">{{ validation.collateral_damage.rows_removed }} duplicate rows removed</div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
     <!-- Issue Resolution Summary -->
     <div class="section">
       <h2>Quality Issues & Resolutions Summary</h2>
