@@ -10,7 +10,7 @@ from datafix.config import Config
 from datafix.models import Issue, ChangeLogEntry
 from datafix.profiler import ensure_row_id
 from datafix.audit import AuditLog
-from datafix.validate import validate_repair, ValidationResult
+from datafix.validate import validate_repair, ValidationResult, compute_quality_metrics
 from datafix.report import generate_html_report
 
 
@@ -162,6 +162,51 @@ def apply_bulk_threshold(
             entry.status = "approved"
             count += 1
     return count
+
+
+def compute_projected_threshold_impact(
+    df_original: pd.DataFrame,
+    issues_before: List[Issue],
+    audit_log: AuditLog,
+    threshold: float,
+    config: Optional[Config] = None
+) -> Dict[str, Any]:
+    """Calculate the live impact of a threshold on applied/suggested counts and quality score without re-running detection."""
+    cfg = config or Config()
+    applied_count = sum(1 for e in audit_log.entries if e.confidence >= threshold)
+    suggested_count = sum(1 for e in audit_log.entries if e.confidence < threshold)
+
+    # Group change entries by issue_id
+    issue_entries: Dict[str, List[ChangeLogEntry]] = {}
+    for e in audit_log.entries:
+        if e.issue_id:
+            issue_entries.setdefault(e.issue_id, []).append(e)
+
+    # An issue is resolved if all of its repairs meet or exceed the threshold
+    remaining_issues: List[Issue] = []
+    for issue in issues_before:
+        entries = issue_entries.get(issue.issue_id, [])
+        if not entries:
+            remaining_issues.append(issue)
+        elif not all(e.confidence >= threshold for e in entries):
+            remaining_issues.append(issue)
+
+    # Quality metrics before
+    metrics_before = compute_quality_metrics(df_original, issues_before, config=cfg)
+    # Projected quality metrics with remaining issues
+    projected_metrics = compute_quality_metrics(df_original, remaining_issues, config=cfg)
+    score_delta = round(projected_metrics.overall_score - metrics_before.overall_score, 1)
+
+    return {
+        "applied_count": applied_count,
+        "suggested_count": suggested_count,
+        "projected_score": round(projected_metrics.overall_score, 1),
+        "score_delta": score_delta,
+        "metrics_before": metrics_before,
+        "projected_metrics": projected_metrics,
+        "resolved_issues_count": len(issues_before) - len(remaining_issues),
+        "remaining_issues_count": len(remaining_issues),
+    }
 
 
 def paginate_entries(

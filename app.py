@@ -16,6 +16,7 @@ from datafix.ui_helpers import (
     filter_issues,
     apply_change_decisions,
     apply_bulk_threshold,
+    compute_projected_threshold_impact,
     generate_export_bundle,
     paginate_entries,
     build_diff_dataframe,
@@ -304,6 +305,51 @@ with tab4:
             rc2.metric("Pending Suggestions", counts.get("suggested", 0))
             rc3.metric("User Approved", counts.get("approved", 0))
             rc4.metric("User Rejected", counts.get("rejected", 0))
+
+            st.divider()
+
+            # What-If Threshold Simulator
+            st.subheader("🎚️ Threshold What-If Simulator")
+            st.markdown("Move the auto-apply threshold to preview live defect resolution and projected data quality score without re-running detection.")
+            
+            whatif_col_slider, whatif_col_btn = st.columns([3, 1])
+            with whatif_col_slider:
+                slider_val = st.slider(
+                    "Auto-Apply Confidence Threshold",
+                    min_value=0.0,
+                    max_value=1.0,
+                    value=0.85,
+                    step=0.05,
+                    help="Repairs with confidence ≥ this threshold are projected as applied."
+                )
+            
+            impact = compute_projected_threshold_impact(
+                df_original=st.session_state.df_raw,
+                issues_before=st.session_state.pipeline_result.issues_before,
+                audit_log=audit_log,
+                threshold=slider_val
+            )
+
+            with whatif_col_btn:
+                st.write("")
+                st.write("")
+                if st.button(f"⚡ Apply Threshold ({slider_val:.2f})", use_container_width=True):
+                    approved_count = apply_bulk_threshold(audit_log, threshold=slider_val)
+                    for e in audit_log.entries:
+                        st.session_state.decisions[e.change_id] = e.status
+                    df_repaired, audit_log = apply_change_decisions(
+                        st.session_state.df_raw, audit_log, st.session_state.decisions
+                    )
+                    st.session_state.df_repaired = df_repaired
+                    st.session_state.audit_log = audit_log
+                    st.success(f"Applied threshold {slider_val:.2f}: {approved_count} changes updated!")
+                    st.rerun()
+
+            sc1, sc2, sc3, sc4 = st.columns(4)
+            sc1.metric("Projected Quality Score", f"{impact['projected_score']:.1f} / 100", delta=f"{impact['score_delta']:+.1f}")
+            sc2.metric("Projected Applied Changes", f"{impact['applied_count']:,}")
+            sc3.metric("Projected Suggested Changes", f"{impact['suggested_count']:,}")
+            sc4.metric("Projected Resolved Issues", f"{impact['resolved_issues_count']} / {len(st.session_state.pipeline_result.issues_before)}")
 
             st.divider()
 

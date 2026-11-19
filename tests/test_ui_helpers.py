@@ -250,3 +250,29 @@ def test_build_diff_dataframe_and_styler():
     styler = style_confidence_dataframe(df)
     assert styler is not None
 
+
+def test_compute_projected_threshold_impact():
+    """Test what-if projected impact calculation across thresholds."""
+    from datafix.ui_helpers import compute_projected_threshold_impact
+    df = pd.DataFrame({"col": [1, 2, 3, 4]})
+    issue1 = Issue("I1", "outlier", ["col"], [1], [999], "high", "outlier", "outlier")
+    issue2 = Issue("I2", "missing_value", ["col"], [2], [None], "med", "missing", "missing")
+    
+    e1 = ChangeLogEntry("C1", "2026-01-01", 1, "col", 999, 10, "I1", "strat", "reason", 0.90, "applied")
+    e2 = ChangeLogEntry("C2", "2026-01-01", 2, "col", None, 5, "I2", "strat", "reason", 0.70, "suggested")
+    audit = AuditLog([e1, e2])
+
+    # Threshold 0.85: only e1 applied
+    impact_85 = compute_projected_threshold_impact(df, [issue1, issue2], audit, threshold=0.85)
+    assert impact_85["applied_count"] == 1
+    assert impact_85["suggested_count"] == 1
+    assert impact_85["resolved_issues_count"] == 1
+
+    # Threshold 0.65: both e1 and e2 applied
+    impact_65 = compute_projected_threshold_impact(df, [issue1, issue2], audit, threshold=0.65)
+    assert impact_65["applied_count"] == 2
+    assert impact_65["suggested_count"] == 0
+    assert impact_65["resolved_issues_count"] == 2
+    assert impact_65["projected_score"] >= impact_85["projected_score"]
+
+
