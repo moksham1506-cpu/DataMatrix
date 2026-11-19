@@ -70,12 +70,13 @@ def detect_duplicates(df: pd.DataFrame, config: Optional[Config] = None) -> List
     # 2. FUZZY DUPLICATES
     # =========================================================================
     # Identify candidate text columns for fuzzy matching (name, address, company, etc.)
+    entity_keywords = ["name", "title", "company", "customer", "client", "vendor", "address", "street", "person"]
     text_cols = [
         c for c in content_cols
         if df_with_id[c].dtype == object or isinstance(df_with_id[c].dtype, pd.StringDtype)
     ]
-    name_cols = [c for c in text_cols if any(k in c.lower() for k in ["name", "title", "company"])]
-    target_cols = name_cols if name_cols else text_cols[:2]
+    name_cols = [c for c in text_cols if any(k in c.lower() for k in entity_keywords)]
+    target_cols = name_cols
 
     if target_cols:
         # Create normalized string representation for fuzzy comparison
@@ -111,8 +112,8 @@ def detect_duplicates(df: pd.DataFrame, config: Optional[Config] = None) -> List
                     r_id2, txt2 = items[j]
                     if txt1 == txt2:
                         continue
-                    sim = fuzz.token_sort_ratio(txt1, txt2)
-                    if sim >= threshold:
+                    sim = fuzz.ratio(txt1, txt2)
+                    if sim >= max(threshold, 93.0):
                         fuzzy_pairs.append((r_id1, r_id2, round(sim / 100.0, 3)))
                         fuzzy_row_ids.add(r_id2)
 
